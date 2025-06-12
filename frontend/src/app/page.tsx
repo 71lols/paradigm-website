@@ -49,9 +49,42 @@ export default function Home() {
 
         ]}
         containerHeight="h-[calc(100vh-6rem)]"
-        className="bg-[#191919]"
+        className="bg-[#191919] relative"
         rounded="rounded-2xl"
       >
+
+      <Image
+        src="/home/HeroBorder.svg"
+        alt="Gradient Border"
+        width={374}
+        height={89}
+        className="absolute translate-x-[20%]"
+      />
+
+      <Image
+        src="/home/HeroBorder.svg"
+        alt="Gradient Border"
+        width={374}
+        height={89}
+        className="absolute bottom-0 right-0 scale-x-[-1] scale-y-[-1] translate-x-[-20%]"
+      />
+
+      <div className="flex flex-col justify-center items-center min-w-full min-h-full space-y-4">
+        <div className="h-8 w-fit px-6 flex justify-center items-center gap-2 border-2 border-[#515151] bg-[#D9D9D9]/10 rounded-2xl">
+          <h3 className="text-[#D9D9D9] text-md text-center font-medium">Get Started Now</h3>
+          <Image
+            src="/home/HyperlinkArrow.svg"
+            alt="Hyperlink Arrow"
+            width={10}
+            height={10}
+            className="pt-0.5"
+          />
+        </div>
+        <h1 className="text-[#D9D9D9] text-5xl/snug font-semibold text-center">See, Hear, Understand <br /> The AI that gets it instantly</h1>
+        <h2 className="text-[#D9D9D9] text-md text-center font-thin w-[56rem]"> Have a personal assistant AI that sees your screen, hears your calls, and  knows everything you need before you ask. 
+Your AI that knows without asking</h2>
+      </div>
+
       </GradientContainer>
     </div>
   );
