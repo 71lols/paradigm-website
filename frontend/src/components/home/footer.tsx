@@ -3,22 +3,26 @@
 export default function Footer() {
   // Smooth scroll function
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, link: string) => {
-    e.preventDefault();
-    
-    // Remove # from the link to get the element ID
-    const targetId = link.replace('#', '');
-    const targetElement = document.getElementById(targetId);
-    
-    if (targetElement) {
-      // Calculate offset for fixed navbar (adjust this value as needed)
-      const navbarOffset = 100;
-      const elementPosition = targetElement.offsetTop - navbarOffset;
+    // Only prevent default and smooth scroll for hash links (same-page navigation)
+    if (link.startsWith('#')) {
+      e.preventDefault();
       
-      window.scrollTo({
-        top: elementPosition,
-        behavior: 'smooth'
-      });
+      // Remove # from the link to get the element ID
+      const targetId = link.replace('#', '');
+      const targetElement = document.getElementById(targetId);
+      
+      if (targetElement) {
+        // Calculate offset for fixed navbar (adjust this value as needed)
+        const navbarOffset = 100;
+        const elementPosition = targetElement.offsetTop - navbarOffset;
+        
+        window.scrollTo({
+          top: elementPosition,
+          behavior: 'smooth'
+        });
+      }
     }
+    // For actual routes (like /pricing), let default navigation happen
   };
 
   return (
@@ -70,8 +74,8 @@ export default function Footer() {
                 Features
               </a>
               <a 
-                href="#pricing" 
-                onClick={(e) => handleNavClick(e, "#pricing")}
+                href="/pricing" 
+                onClick={(e) => handleNavClick(e, "/pricing")}
                 className="block text-[#D9D9D9] text-sm hover:text-white transition-colors"
               >
                 Pricing

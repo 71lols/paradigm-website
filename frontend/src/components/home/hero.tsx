@@ -68,7 +68,7 @@ export default function Hero() {
 
       <div className="flex flex-col justify-center items-center min-w-full min-h-full space-y-4 px-4 sm:px-6 md:px-8">
         <div className="h-8 w-fit px-4 sm:px-6 flex justify-center items-center gap-2 border-2 border-[#515151] bg-[#D9D9D9]/10 rounded-2xl">
-          <h3 className="text-[#D9D9D9] text-sm sm:text-md text-center font-medium">Get Started Now</h3>
+          <h3 className="text-[#D9D9D9] text-sm sm:text-md text-center font-medium">Download Now</h3>
           <Image
             src="/home/HyperlinkArrow.svg"
             alt="Hyperlink Arrow"

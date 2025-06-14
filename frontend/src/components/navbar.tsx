@@ -65,7 +65,7 @@ export default function CustomNavbar() {
     },
     {
       name: "Pricing",
-      link: "#pricing",
+      link: "/pricing",
     },
     {
       name: "Help",
@@ -81,25 +81,32 @@ export default function CustomNavbar() {
 
   // Smooth scroll function
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, link: string) => {
-    e.preventDefault();
-    
-    // Remove # from the link to get the element ID
-    const targetId = link.replace('#', '');
-    const targetElement = document.getElementById(targetId);
-    
-    if (targetElement) {
-      // Calculate offset for fixed navbar (adjust this value as needed)
-      const navbarOffset = 100;
-      const elementPosition = targetElement.offsetTop - navbarOffset;
+    // Only prevent default and smooth scroll for hash links (same-page navigation)
+    if (link.startsWith('#')) {
+      e.preventDefault();
       
-      window.scrollTo({
-        top: elementPosition,
-        behavior: 'smooth'
-      });
+      // Remove # from the link to get the element ID
+      const targetId = link.replace('#', '');
+      const targetElement = document.getElementById(targetId);
+      
+      if (targetElement) {
+        // Calculate offset for fixed navbar (adjust this value as needed)
+        const navbarOffset = 100;
+        const elementPosition = targetElement.offsetTop - navbarOffset;
+        
+        window.scrollTo({
+          top: elementPosition,
+          behavior: 'smooth'
+        });
+      }
+      
+      // Close mobile menu if open
+      setIsMobileMenuOpen(false);
+    } else {
+      // For actual routes (like /pricing), just close mobile menu and let default navigation happen
+      setIsMobileMenuOpen(false);
+      // Don't prevent default - let the browser navigate normally
     }
-    
-    // Close mobile menu if open
-    setIsMobileMenuOpen(false);
   };
 
   return (
