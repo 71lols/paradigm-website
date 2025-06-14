@@ -11,9 +11,15 @@ export default function Home() {
       <CustomNavbar />
       <div className="bg-[#191919] w-full min-h-screen p-4 sm:p-6 md:p-8 lg:p-12 pt-20">
         <Hero />
-        <HowItWorks />
-        <Features />
-        <CTA />
+        <div id="how-it-works">
+          <HowItWorks />
+        </div>
+        <div id="features">
+          <Features />
+        </div>
+        <div id="contact">
+          <CTA />
+        </div>
         <Footer />
       </div>
     </>
