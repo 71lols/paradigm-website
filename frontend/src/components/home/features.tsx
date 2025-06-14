@@ -119,17 +119,17 @@ export default function Features() {
               {
                 id: 'work-bottom-left',
                 position: { x: 5, y: 95 },
-                size: { width: 177.2, height: 181.3 },
+                size: { width: 277.2, height: 221.3 },
                 colors: { from: '#D9D9D9', to: 'transparent' },
-                blur: 80,
+                blur: 60,
                 opacity: 40,
                 rotation: -20,
                 className: ''
               },
               {
                 id: 'works-top-right',
-                position: { x: 95, y: 15 },
-                size: { width: 250, height: 120 },
+                position: { x: 95, y: 5 },
+                size: { width: 500, height: 240 },
                 colors: { from: '#D9D9D9', to: 'transparent' },
                 blur: 70,
                 opacity: 30,
