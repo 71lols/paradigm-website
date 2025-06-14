@@ -1,4 +1,26 @@
+"use client";
+
 export default function Footer() {
+  // Smooth scroll function
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, link: string) => {
+    e.preventDefault();
+    
+    // Remove # from the link to get the element ID
+    const targetId = link.replace('#', '');
+    const targetElement = document.getElementById(targetId);
+    
+    if (targetElement) {
+      // Calculate offset for fixed navbar (adjust this value as needed)
+      const navbarOffset = 100;
+      const elementPosition = targetElement.offsetTop - navbarOffset;
+      
+      window.scrollTo({
+        top: elementPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
     <footer className="bg-[#191919] py-12 px-4 sm:px-6 md:px-8 lg:px-12">
       <div className="w-full max-w-6xl mx-auto">
@@ -33,19 +55,39 @@ export default function Footer() {
             
             {/* Navigation Links */}
             <div className="space-y-4">
-              <a href="#" className="block text-[#D9D9D9] text-sm hover:text-white transition-colors">
+              <a 
+                href="#how-it-works" 
+                onClick={(e) => handleNavClick(e, "#how-it-works")}
+                className="block text-[#D9D9D9] text-sm hover:text-white transition-colors"
+              >
                 How It Works
               </a>
-              <a href="#" className="block text-[#D9D9D9] text-sm hover:text-white transition-colors">
+              <a 
+                href="#features" 
+                onClick={(e) => handleNavClick(e, "#features")}
+                className="block text-[#D9D9D9] text-sm hover:text-white transition-colors"
+              >
                 Features
               </a>
-              <a href="#" className="block text-[#D9D9D9] text-sm hover:text-white transition-colors">
+              <a 
+                href="#pricing" 
+                onClick={(e) => handleNavClick(e, "#pricing")}
+                className="block text-[#D9D9D9] text-sm hover:text-white transition-colors"
+              >
                 Pricing
               </a>
-              <a href="#" className="block text-[#D9D9D9] text-sm hover:text-white transition-colors">
+              <a 
+                href="#help" 
+                onClick={(e) => handleNavClick(e, "#help")}
+                className="block text-[#D9D9D9] text-sm hover:text-white transition-colors"
+              >
                 Help
               </a>
-              <a href="#" className="block text-[#D9D9D9] text-sm hover:text-white transition-colors">
+              <a 
+                href="#contact" 
+                onClick={(e) => handleNavClick(e, "#contact")}
+                className="block text-[#D9D9D9] text-sm hover:text-white transition-colors"
+              >
                 Contact Us
               </a>
             </div>
