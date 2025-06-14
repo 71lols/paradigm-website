@@ -1,6 +1,8 @@
 import Hero from "@/components/home/hero";
 import HowItWorks from "@/components/home/howItWorks";
 import Features from "@/components/home/features";
+import CTA from "@/components/home/CTA";
+import Footer from "@/components/home/footer";
 
 export default function Home() {
   return (
@@ -8,6 +10,8 @@ export default function Home() {
       <Hero />
       <HowItWorks />
       <Features />
+      <CTA />
+      <Footer />
     </div>
   );
 }

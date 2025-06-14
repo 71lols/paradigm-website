@@ -80,7 +80,7 @@ export default function HowItWorks() {
                   I'm thinking of building this AI assistant that can be able to 
                   see what you're seeing and hear what you're hearing.
                 </p>
-                <div className="bg-[#1E3A8A] text-[#D9D99] px-3 py-2 rounded inline-block">
+                <div className="bg-[#1E3A8A] text-[#D9D9D9] px-3 py-2 rounded inline-block">
                   Awesome! What tech stack should we use
                 </div>
               </div>
