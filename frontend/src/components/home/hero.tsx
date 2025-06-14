@@ -47,7 +47,7 @@ export default function Hero() {
         }
       ]}
       containerHeight="h-[calc(100vh-6rem)] sm:h-[calc(100vh-4rem)] md:h-[calc(100vh-6rem)]"
-      className="bg-[#191919] relative"
+      className="bg-[#191919] relative mt-12"
       rounded="rounded-2xl"
     >
       <Image

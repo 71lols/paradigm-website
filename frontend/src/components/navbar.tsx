@@ -1,86 +1,142 @@
-'use client';
+"use client";
+import {
+  Navbar,
+  NavBody,
+  NavItems,
+  MobileNav,
+  NavbarLogo,
+  NavbarButton,
+  MobileNavHeader,
+  MobileNavToggle,
+  MobileNavMenu,
+} from "@/components/UI/resizable-navbar";
+import { useState } from "react";
 
-import { useState, useEffect } from 'react';
-import Button from '@/components/UI/whiteButton';
+// Custom NavbarLogo to match your theme
+const CustomNavbarLogo = () => {
+  return (
+    <a
+      href="#"
+      className="relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal"
+    >
+      <span className="font-semibold text-[#D9D9D9]">LOGO</span>
+    </a>
+  );
+};
 
-export default function Navbar() {
-  const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      // Show navbar when scrolling up, hide when scrolling down
-      if (currentScrollY < lastScrollY || currentScrollY < 100) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
-      
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+// Custom NavbarButton to match your theme
+const CustomNavbarButton = ({
+  children,
+  variant = "primary",
+  className = "",
+  ...props
+}: {
+  children: React.ReactNode;
+  variant?: "primary" | "secondary";
+  className?: string;
+  [key: string]: any;
+}) => {
+  const baseStyles = "px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-80";
+  
+  const variants = {
+    primary: "bg-[#D9D9D9]/10 border-2 border-[#515151] text-[#D9D9D9]",
+    secondary: "text-[#D9D9D9] hover:text-white"
+  };
 
   return (
-    <nav 
-      className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ease-in-out ${
-        isVisible ? 'translate-y-0' : '-translate-y-full'
-      }`}
+    <button 
+      className={`${baseStyles} ${variants[variant]} ${className}`}
+      {...props}
     >
-      <div className="bg-[#191919]/80 backdrop-blur-md border border-[#333333] rounded-full px-6 py-3">
-        <div className="flex items-center justify-between space-x-8">
-          
-          {/* Logo */}
-          <div className="flex-shrink-0">
-            <span className="text-[#D9D9D9] text-lg font-semibold">LOGO</span>
-          </div>
+      {children}
+    </button>
+  );
+};
 
-          {/* Desktop Navigation Links */}
-          <div className="hidden md:flex items-center space-x-6">
-            <a href="#how-it-works" className="text-[#D9D9D9] hover:text-white text-sm font-medium transition-colors">
-              How it works
-            </a>
-            <a href="#features" className="text-[#D9D9D9] hover:text-white text-sm font-medium transition-colors">
-              Features
-            </a>
-            <a href="#pricing" className="text-[#D9D9D9] hover:text-white text-sm font-medium transition-colors">
-              Pricing
-            </a>
-            <a href="#help" className="text-[#D9D9D9] hover:text-white text-sm font-medium transition-colors">
-              Help
-            </a>
-            <a href="#contact" className="text-[#D9D9D9] hover:text-white text-sm font-medium transition-colors flex items-center">
-              Contact Us
-              <svg className="ml-1 w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6L16 12l-6 6" />
-              </svg>
-            </a>
-          </div>
+export default function CustomNavbar() {
+  const navItems = [
+    {
+      name: "How it works",
+      link: "#how-it-works",
+    },
+    {
+      name: "Features",
+      link: "#features",
+    },
+    {
+      name: "Pricing",
+      link: "#pricing",
+    },
+    {
+      name: "Help",
+      link: "#help",
+    },
+    {
+      name: "Contact Us",
+      link: "#contact",
+    },
+  ];
 
-          {/* Right Side - Auth Buttons */}
-          <div className="hidden md:flex items-center space-x-3">
-            <button className="text-[#D9D9D9] hover:text-white text-sm font-medium transition-colors">
-              Login
-            </button>
-            <Button variant="primary" size="sm">
-              Sign in
-            </Button>
-          </div>
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button className="text-[#D9D9D9] hover:text-white">
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
+  return (
+    <Navbar className="fixed inset-x-0 top-4 z-50 w-full">
+      {/* Desktop Navigation */}
+      <NavBody className="bg-[#191919]/80 backdrop-blur-md rounded-full mx-auto [&.bg-white\/80]:!border [&.bg-white\/80]:!border-[#333333] dark:[&.bg-neutral-950\/80]:!border dark:[&.bg-neutral-950\/80]:!border-[#333333]">
+        <CustomNavbarLogo />
+        <NavItems 
+          items={navItems} 
+          className="[&>a]:text-[#D9D9D9] [&>a:hover]:text-white [&_.bg-gray-100]:!bg-[#333333] dark:[&_.bg-neutral-800]:!bg-[#333333]"
+        />
+        <div className="flex items-center gap-3">
+          <CustomNavbarButton variant="secondary">Login</CustomNavbarButton>
+          <CustomNavbarButton variant="primary">Sign in</CustomNavbarButton>
         </div>
-      </div>
-    </nav>
+      </NavBody>
+
+      {/* Mobile Navigation */}
+      <MobileNav className="bg-[#191919]/80 backdrop-blur-md mx-auto [&.bg-white\/80]:!border [&.bg-white\/80]:!border-[#333333] dark:[&.bg-neutral-950\/80]:!border dark:[&.bg-neutral-950\/80]:!border-[#333333]">
+        <MobileNavHeader>
+          <CustomNavbarLogo />
+          <MobileNavToggle
+            isOpen={isMobileMenuOpen}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          />
+        </MobileNavHeader>
+
+        <MobileNavMenu
+          isOpen={isMobileMenuOpen}
+          onClose={() => setIsMobileMenuOpen(false)}
+          className="bg-[#191919] border border-[#333333]"
+        >
+          {navItems.map((item, idx) => (
+            <a
+              key={`mobile-link-${idx}`}
+              href={item.link}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-[#D9D9D9] hover:text-white"
+            >
+              <span className="block">{item.name}</span>
+            </a>
+          ))}
+          <div className="flex w-full flex-col gap-4">
+            <CustomNavbarButton
+              onClick={() => setIsMobileMenuOpen(false)}
+              variant="secondary"
+              className="w-full justify-center"
+            >
+              Login
+            </CustomNavbarButton>
+            <CustomNavbarButton
+              onClick={() => setIsMobileMenuOpen(false)}
+              variant="primary"
+              className="w-full justify-center"
+            >
+              Sign in
+            </CustomNavbarButton>
+          </div>
+        </MobileNavMenu>
+      </MobileNav>
+    </Navbar>
   );
 }
