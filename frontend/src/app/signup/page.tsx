@@ -1,8 +1,10 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import GradientContainer from "@/components/UI/gradientContainer";
 import Link from "next/link";
 import Image from "next/image";
+import { useAuth } from "../../components/auth/authContext";
 
 const GoogleIcon = () => (
   <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -37,6 +39,11 @@ export default function SignUpPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const { signUp, signInWithGoogle, signInWithGithub } = useAuth();
+  const router = useRouter();
 
   const ellipses = [
     {
@@ -54,24 +61,76 @@ export default function SignUpPage() {
       size: { width: 180, height: 180 },
       colors: { from: "#D9D9D9", to: "transparent" },
       blur: 80,
-      opacity:60
+      opacity: 60
     }
   ];
 
-  const handleGoogleSignUp = () => {
-    // Firebase Google auth will go here
-    console.log("Google sign up");
+  const handleGoogleSignUp = async () => {
+    setLoading(true);
+    setError("");
+    
+    try {
+      const result = await signInWithGoogle();
+      if (result.error) {
+        setError(result.error);
+      } else {
+        // Redirect to dashboard or home page
+        router.push("/dashboard");
+      }
+    } catch (error: any) {
+      setError(error.message || "An error occurred during Google sign up");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleGithubSignUp = () => {
-    // Firebase GitHub auth will go here  
-    console.log("GitHub sign up");
+  const handleGithubSignUp = async () => {
+    setLoading(true);
+    setError("");
+    
+    try {
+      const result = await signInWithGithub();
+      if (result.error) {
+        setError(result.error);
+      } else {
+        // Redirect to dashboard or home page
+        router.push("/dashboard");
+      }
+    } catch (error: any) {
+      setError(error.message || "An error occurred during GitHub sign up");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleEmailSignUp = (e: React.FormEvent) => {
+  const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Firebase email auth will go here
-    console.log("Email sign up", { email, password });
+    setLoading(true);
+    setError("");
+
+    if (!agreeToTerms) {
+      setError("Please agree to the Terms of Service and Privacy Policy");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const result = await signUp(email, password);
+      if (result.error) {
+        setError(result.error);
+      } else {
+        // Success! User is now signed in via Firebase
+        // Show success message briefly then redirect
+        setError(""); // Clear any errors
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 1000);
+      }
+    } catch (error: any) {
+      setError(error.message || "An error occurred during sign up");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -95,20 +154,36 @@ export default function SignUpPage() {
               <h1 className="text-2xl font-md text-white mb-6">Create an Account</h1>
             </div>
 
+            {/* Success Message */}
+            {!error && loading && (
+              <div className="bg-green-500/20 border border-green-500/50 rounded-lg p-3">
+                <p className="text-green-400 text-sm">Creating your account...</p>
+              </div>
+            )}
+
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3">
+                <p className="text-red-400 text-sm">{error}</p>
+              </div>
+            )}
+
             {/* Social Login Buttons */}
             <div>
               <p className="text-center text-white/70 text-sm font-semibold mb-4">Continue with</p>
               <div className="flex gap-3">
                 <button
                   onClick={handleGoogleSignUp}
-                  className="flex-1 flex items-center justify-center gap-3 bg-[#D9D9D9]/5 hover:bg-[#D9D9D9]/10 text-white px-4 py-[0.4rem] rounded-lg border border-[#5F5F5F] transition-all duration-200"
+                  disabled={loading}
+                  className="flex-1 flex items-center justify-center gap-3 bg-[#D9D9D9]/5 hover:bg-[#D9D9D9]/10 text-white px-4 py-[0.4rem] rounded-lg border border-[#5F5F5F] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <GoogleIcon />
                   <span className="text-sm">Google</span>
                 </button>
                 <button
                   onClick={handleGithubSignUp}
-                  className="flex-1 flex items-center justify-center gap-3 bg-[#D9D9D9]/5 hover:bg-[#D9D9D9]/10 text-white px-4 rounded-lg border border-[#5F5F5F] transition-all duration-200"
+                  disabled={loading}
+                  className="flex-1 flex items-center justify-center gap-3 bg-[#D9D9D9]/5 hover:bg-[#D9D9D9]/10 text-white px-4 rounded-lg border border-[#5F5F5F] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <GithubIcon />
                   <span className="text-sm">Github</span>
@@ -150,6 +225,7 @@ export default function SignUpPage() {
                       boxShadow: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.3)'
                     }}
                     required
+                    disabled={loading}
                   />
                 </div>
               </div>
@@ -179,11 +255,13 @@ export default function SignUpPage() {
                       boxShadow: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.3)'
                     }}
                     required
+                    disabled={loading}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute inset-y-0 right-0 flex items-center pr-4 text-white/50 hover:text-white/70"
+                    disabled={loading}
                   >
                     {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                   </button>
@@ -202,6 +280,7 @@ export default function SignUpPage() {
                     boxShadow: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.3)'
                   }}
                   required
+                  disabled={loading}
                 />
                 <label htmlFor="terms" className="text-sm text-white/70">
                   I Agree to the{" "}
@@ -218,10 +297,14 @@ export default function SignUpPage() {
               {/* Sign Up Button */}
               <button
                 type="submit"
-                disabled={!agreeToTerms}
-                className="w-full bg-white text-black py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={!agreeToTerms || loading}
+                className="w-full bg-white text-black py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
-                Sign up
+                {loading ? (
+                  <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
+                ) : (
+                  "Sign up"
+                )}
               </button>
             </form>
 
