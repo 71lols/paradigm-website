@@ -137,7 +137,7 @@ export default function SignUpPage() {
     <div className="min-h-screen bg-[#191919] flex items-center justify-center p-4">
       {/* Logo */}
       <div className="absolute top-8 left-8">
-        <span className="text-white text-xl font-semibold">LOGO</span>
+        <span className="text-white text-xl font-semibold"><a href="/">LOGO</a></span>
       </div>
 
       {/* Sign Up Container */}
@@ -313,7 +313,7 @@ export default function SignUpPage() {
               <span className="text-white/70 text-sm">
                 Already have an account?{" "}
                 <Link href="/login" className="text-white font-medium hover:text-white/80">
-                  Sign in
+                  Login
                 </Link>
               </span>
             </div>

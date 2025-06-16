@@ -94,6 +94,20 @@ export default function Footer() {
               >
                 Contact Us
               </a>
+              <a 
+                href="/login" 
+                onClick={(e) => handleNavClick(e, "/login")}
+                className="block text-[#D9D9D9] text-sm hover:text-white transition-colors"
+              >
+                Login
+              </a>
+              <a 
+                href="/signup" 
+                onClick={(e) => handleNavClick(e, "/signup")}
+                className="block text-[#D9D9D9] text-sm hover:text-white transition-colors"
+              >
+                Sign up
+              </a>
             </div>
             
             {/* Social Links */}

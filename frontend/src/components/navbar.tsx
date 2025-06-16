@@ -11,6 +11,7 @@ import {
   MobileNavMenu,
 } from "@/components/UI/resizable-navbar";
 import { useState } from "react";
+import Link from "next/link";
 
 // Custom NavbarLogo to match your theme
 const CustomNavbarLogo = () => {
@@ -21,35 +22,6 @@ const CustomNavbarLogo = () => {
     >
       <span className="font-semibold text-[#D9D9D9]">LOGO</span>
     </a>
-  );
-};
-
-// Custom NavbarButton to match your theme
-const CustomNavbarButton = ({
-  children,
-  variant = "primary",
-  className = "",
-  ...props
-}: {
-  children: React.ReactNode;
-  variant?: "primary" | "secondary";
-  className?: string;
-  [key: string]: any;
-}) => {
-  const baseStyles = "px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-80";
-  
-  const variants = {
-    primary: "bg-[#D9D9D9]/10 border-2 border-[#515151] text-[#D9D9D9]",
-    secondary: "text-[#D9D9D9] hover:text-white"
-  };
-
-  return (
-    <button 
-      className={`${baseStyles} ${variants[variant]} ${className}`}
-      {...props}
-    >
-      {children}
-    </button>
   );
 };
 
@@ -119,9 +91,17 @@ export default function CustomNavbar() {
           className="[&>a]:text-[#D9D9D9] [&>a:hover]:text-white [&_.bg-gray-100]:!bg-[#333333] dark:[&_.bg-neutral-800]:!bg-[#333333]"
           onItemClick={(e, link) => handleNavClick(e, link)}
         />
-        <div className="flex items-center gap-3">
-          <CustomNavbarButton variant="secondary">Login</CustomNavbarButton>
-          <CustomNavbarButton variant="primary">Sign in</CustomNavbarButton>
+        <div className="flex items-center gap-3 relative z-10">
+          <Link href="/login" className="cursor-pointer relative z-10">
+            <span className="block px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-80 text-[#D9D9D9] hover:text-white cursor-pointer">
+              Login
+            </span>
+          </Link>
+          <Link href="/signup" className="cursor-pointer relative z-10">
+            <span className="block px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-80 bg-[#D9D9D9]/10 border-2 border-[#515151] text-[#D9D9D9] cursor-pointer">
+              Sign up
+            </span>
+          </Link>
         </div>
       </NavBody>
 
@@ -151,20 +131,22 @@ export default function CustomNavbar() {
             </a>
           ))}
           <div className="flex w-full flex-col gap-4">
-            <CustomNavbarButton
-              onClick={() => setIsMobileMenuOpen(false)}
-              variant="secondary"
-              className="w-full justify-center"
-            >
-              Login
-            </CustomNavbarButton>
-            <CustomNavbarButton
-              onClick={() => setIsMobileMenuOpen(false)}
-              variant="primary"
-              className="w-full justify-center"
-            >
-              Sign in
-            </CustomNavbarButton>
+            <Link href="/login" className="w-full cursor-pointer">
+              <button 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-80 text-[#D9D9D9] hover:text-white w-full justify-center cursor-pointer"
+              >
+                Login
+              </button>
+            </Link>
+            <Link href="/signup" className="w-full cursor-pointer">
+              <button 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-80 bg-[#D9D9D9]/10 border-2 border-[#515151] text-[#D9D9D9] w-full justify-center cursor-pointer"
+              >
+                Sign up
+              </button>
+            </Link>
           </div>
         </MobileNavMenu>
       </MobileNav>

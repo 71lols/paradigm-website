@@ -126,7 +126,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-[#191919] flex items-center justify-center p-4">
       {/* Logo */}
       <div className="absolute top-8 left-8">
-        <span className="text-white text-xl font-semibold">LOGO</span>
+        <span className="text-white text-xl font-semibold"><a href="/">LOGO</a></span>
       </div>
 
       {/* Login Container */}
@@ -273,7 +273,7 @@ export default function LoginPage() {
                 {loading ? (
                   <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
                 ) : (
-                  "Sign in"
+                  "Login"
                 )}
               </button>
             </form>
