@@ -1,8 +1,10 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import GradientContainer from "@/components/UI/gradientContainer";
 import Link from "next/link";
 import Image from "next/image";
+import { useAuth } from "@/components/auth/authContext";
 
 const GoogleIcon = () => (
   <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -36,6 +38,11 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const { signIn, signInWithGoogle, signInWithGithub } = useAuth();
+  const router = useRouter();
 
   const ellipses = [
     {
@@ -57,20 +64,62 @@ export default function LoginPage() {
     }
   ];
 
-  const handleGoogleLogin = () => {
-    // Firebase Google auth will go here
-    console.log("Google login");
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    setError("");
+    
+    try {
+      const result = await signInWithGoogle();
+      if (result.error) {
+        setError(result.error);
+      } else {
+        // Redirect to dashboard
+        router.push("/dashboard");
+      }
+    } catch (error: any) {
+      setError(error.message || "An error occurred during Google sign in");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleGithubLogin = () => {
-    // Firebase GitHub auth will go here  
-    console.log("GitHub login");
+  const handleGithubLogin = async () => {
+    setLoading(true);
+    setError("");
+    
+    try {
+      const result = await signInWithGithub();
+      if (result.error) {
+        setError(result.error);
+      } else {
+        // Redirect to dashboard
+        router.push("/dashboard");
+      }
+    } catch (error: any) {
+      setError(error.message || "An error occurred during GitHub sign in");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleEmailLogin = (e: React.FormEvent) => {
+  const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Firebase email auth will go here
-    console.log("Email login", { email, password });
+    setLoading(true);
+    setError("");
+
+    try {
+      const result = await signIn(email, password);
+      if (result.error) {
+        setError(result.error);
+      } else {
+        // Success! Redirect to dashboard
+        router.push("/dashboard");
+      }
+    } catch (error: any) {
+      setError(error.message || "An error occurred during sign in");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -94,20 +143,36 @@ export default function LoginPage() {
               <h1 className="text-2xl font-md text-white mb-6">Welcome to Paradigm</h1>
             </div>
 
+            {/* Success Message */}
+            {!error && loading && (
+              <div className="bg-blue-500/20 border border-blue-500/50 rounded-lg p-3">
+                <p className="text-blue-400 text-sm">Signing you in...</p>
+              </div>
+            )}
+
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3">
+                <p className="text-red-400 text-sm">{error}</p>
+              </div>
+            )}
+
             {/* Social Login Buttons */}
             <div>
               <p className="text-center text-white/70 text-sm font-semibold mb-4">Continue with</p>
               <div className="flex gap-3">
                 <button
                   onClick={handleGoogleLogin}
-                  className="flex-1 flex items-center justify-center gap-3 bg-[#D9D9D9]/5 hover:bg-[#D9D9D9]/10 text-white px-4 py-[0.4rem] rounded-lg border border-[#5F5F5F] transition-all duration-200"
+                  disabled={loading}
+                  className="flex-1 flex items-center justify-center gap-3 bg-[#D9D9D9]/5 hover:bg-[#D9D9D9]/10 text-white px-4 py-[0.4rem] rounded-lg border border-[#5F5F5F] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <GoogleIcon />
                   <span className="text-sm">Google</span>
                 </button>
                 <button
                   onClick={handleGithubLogin}
-                  className="flex-1 flex items-center justify-center gap-3 bg-[#D9D9D9]/5 hover:bg-[#D9D9D9]/10 text-white px-4 rounded-lg border border-[#5F5F5F] transition-all duration-200"
+                  disabled={loading}
+                  className="flex-1 flex items-center justify-center gap-3 bg-[#D9D9D9]/5 hover:bg-[#D9D9D9]/10 text-white px-4 rounded-lg border border-[#5F5F5F] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <GithubIcon />
                   <span className="text-sm">Github</span>
@@ -149,6 +214,7 @@ export default function LoginPage() {
                       boxShadow: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.3)'
                     }}
                     required
+                    disabled={loading}
                   />
                 </div>
               </div>
@@ -178,11 +244,13 @@ export default function LoginPage() {
                       boxShadow: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.3)'
                     }}
                     required
+                    disabled={loading}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute inset-y-0 right-0 flex items-center pr-4 text-white/50 hover:text-white/70"
+                    disabled={loading}
                   >
                     {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                   </button>
@@ -199,9 +267,14 @@ export default function LoginPage() {
               {/* Login Button */}
               <button
                 type="submit"
-                className="w-full bg-white text-black py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors"
+                disabled={loading}
+                className="w-full bg-white text-black py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
-                Login
+                {loading ? (
+                  <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
+                ) : (
+                  "Sign in"
+                )}
               </button>
             </form>
 
