@@ -40,6 +40,12 @@ router.post(
 );
 
 router.post(
+  '/create-social-profile',
+  authLimiter,
+  authController.createSocialProfile
+);
+
+router.post(
   '/verify-token',
   verifyToken,
   authController.verifyToken

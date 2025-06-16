@@ -90,6 +90,19 @@ class ApiService {
     });
   }
 
+  async createSocialUserProfile(data: {
+    uid: string;
+    email: string;
+    displayName: string;
+    photoURL: string;
+    provider: string;
+  }): Promise<ApiResponse<any>> {
+    return this.makeRequest('/api/auth/create-social-profile', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
   async verifyToken(): Promise<ApiResponse<{ user: any }>> {
     return this.makeRequest('/api/auth/verify-token', {
       method: 'POST',

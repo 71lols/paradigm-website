@@ -86,6 +86,59 @@ export const authController = {
     }
   }),
 
+  // Create profile for social sign-in users
+  createSocialProfile: catchAsync(async (req: Request, res: Response) => {
+    const { uid, email, displayName, photoURL, provider } = req.body;
+
+    console.log('Creating social profile for:', { uid, email, provider });
+
+    try {
+      // Check if user document already exists
+      const existingDoc = await firebaseAdmin.firestore
+        .collection('users')
+        .doc(uid)
+        .get();
+
+      if (existingDoc.exists) {
+        console.log('Profile already exists for UID:', uid);
+        return ResponseUtil.success(res, existingDoc.data(), 'Profile already exists');
+      }
+
+      // Create user document in Firestore for social sign-in user
+      const userDoc = {
+        uid,
+        email,
+        displayName: displayName || null,
+        role: 'user',
+        emailVerified: true, // Social providers verify emails
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        provider,
+        profile: {
+          firstName: '',
+          lastName: '',
+          phoneNumber: '',
+          avatar: photoURL || '',
+        },
+        preferences: {
+          notifications: true,
+          theme: 'light',
+        },
+      };
+
+      await firebaseAdmin.firestore
+        .collection('users')
+        .doc(uid)
+        .set(userDoc);
+
+      console.log('Social profile created successfully for UID:', uid);
+      return ResponseUtil.created(res, userDoc, 'Social profile created successfully');
+    } catch (error: any) {
+      console.error('Create social profile error:', error);
+      throw new AppError('Failed to create social profile', 500);
+    }
+  }),
+
   // Verify user token and return user data
   verifyToken: catchAsync(async (req: AuthenticatedRequest, res: Response) => {
     if (!req.user) {
@@ -123,16 +176,20 @@ export const authController = {
       throw new AppError('User not authenticated', 401);
     }
 
+    console.log('Getting profile for user:', req.user.uid);
+
     const userDoc = await firebaseAdmin.firestore
       .collection('users')
       .doc(req.user.uid)
       .get();
 
     if (!userDoc.exists) {
+      console.log('User profile not found for UID:', req.user.uid);
       throw new AppError('User profile not found', 404);
     }
 
     const userData = userDoc.data();
+    console.log('Profile found for user:', req.user.uid);
 
     return ResponseUtil.success(res, userData, 'Profile retrieved successfully');
   }),

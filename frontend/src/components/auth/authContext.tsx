@@ -117,6 +117,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setLoading(true);
       const provider = new GoogleAuthProvider();
       const userCredential = await signInWithPopup(auth, provider);
+      
+      // Check if this is a new user and create backend profile
+      await handleSocialSignIn(userCredential.user);
+      
       return { user: userCredential.user };
     } catch (error: any) {
       console.error('Google sign in error:', error);
@@ -148,6 +152,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setLoading(true);
       const provider = new GithubAuthProvider();
       const userCredential = await signInWithPopup(auth, provider);
+      
+      // Check if this is a new user and create backend profile
+      await handleSocialSignIn(userCredential.user);
+      
       return { user: userCredential.user };
     } catch (error: any) {
       console.error('GitHub sign in error:', error);
@@ -170,6 +178,35 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return { error: errorMessage };
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Handle social sign-in and create backend profile if needed
+  const handleSocialSignIn = async (user: User) => {
+    try {
+      // Wait a bit for the Firebase auth state to fully update
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Now call our backend to create the user profile
+      console.log('Creating backend profile for social user:', user.email);
+      
+      const createResponse = await apiService.createSocialUserProfile({
+        uid: user.uid,
+        email: user.email || '',
+        displayName: user.displayName || '',
+        photoURL: user.photoURL || '',
+        provider: user.providerData[0]?.providerId || 'unknown'
+      });
+      
+      if (!createResponse.success) {
+        console.error('Failed to create backend profile:', createResponse.message);
+      } else {
+        console.log('Backend profile created successfully');
+      }
+    } catch (error) {
+      console.error('Error handling social sign in:', error);
+      // Don't throw error here - let the user continue to dashboard
+      // They can retry profile loading from there
     }
   };
 
