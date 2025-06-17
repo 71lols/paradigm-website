@@ -2,6 +2,7 @@
 'use client';
 import { useState } from 'react';
 import { Search, Layers, Settings, Download } from 'lucide-react';
+import UserProfile from './userProfile';
 
 interface SidebarProps {
   activeSection?: string;
@@ -83,15 +84,7 @@ export default function Sidebar({ activeSection = 'context', onSectionChange }: 
         </button>
 
         {/* User Profile */}
-        <div className="flex items-center gap-3 px-3 py-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-            <span className="text-white text-sm font-medium">CM</span>
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-white text-sm font-medium truncate">Christopher Ma</p>
-            <p className="text-white/50 text-xs truncate">christopher.ma@gmail.com</p>
-          </div>
-        </div>
+        <UserProfile />
       </div>
     </div>
   );
