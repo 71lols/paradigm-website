@@ -18,21 +18,22 @@ import {
   Edit3
 } from 'lucide-react';
 
+// Profile interface that matches your backend response
 interface Profile {
   uid: string;
   email: string;
-  displayName: string;
+  displayName?: string;
   role: string;
   createdAt: string;
-  profile: {
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-    avatar: string;
+  profile?: {
+    firstName?: string;
+    lastName?: string;
+    phoneNumber?: string;
+    avatar?: string;
   };
-  preferences: {
-    notifications: boolean;
-    theme: string;
+  preferences?: {
+    notifications?: boolean;
+    theme?: string;
   };
 }
 
@@ -67,6 +68,18 @@ export default function Settings() {
     loadProfile();
   }, []);
 
+  useEffect(() => {
+    // Update form when profile loads
+    if (profile) {
+      setProfileForm({
+        displayName: profile.displayName || '',
+        firstName: profile.profile?.firstName || '',
+        lastName: profile.profile?.lastName || '',
+        phoneNumber: profile.profile?.phoneNumber || ''
+      });
+    }
+  }, [profile]);
+
   const loadProfile = async () => {
     try {
       setLoading(true);
@@ -75,12 +88,7 @@ export default function Settings() {
       
       if (response.success) {
         setProfile(response.data);
-        setProfileForm({
-          displayName: response.data.displayName || '',
-          firstName: response.data.profile?.firstName || '',
-          lastName: response.data.profile?.lastName || '',
-          phoneNumber: response.data.profile?.phoneNumber || ''
-        });
+        // Don't update form here - let useEffect handle it
       } else {
         setError(response.message || 'Failed to load profile');
       }
@@ -97,7 +105,29 @@ export default function Settings() {
       setError('');
       setSuccess('');
       
-      const response = await apiService.updateProfile(profileForm);
+      // Only send fields that have values (non-empty strings)
+      const updateData: any = {};
+      
+      if (profileForm.displayName.trim()) {
+        updateData.displayName = profileForm.displayName.trim();
+      }
+      if (profileForm.firstName.trim()) {
+        updateData.firstName = profileForm.firstName.trim();
+      }
+      if (profileForm.lastName.trim()) {
+        updateData.lastName = profileForm.lastName.trim();
+      }
+      if (profileForm.phoneNumber.trim()) {
+        updateData.phoneNumber = profileForm.phoneNumber.trim();
+      }
+      
+      // Don't make API call if no fields to update
+      if (Object.keys(updateData).length === 0) {
+        setError('Please fill in at least one field to update');
+        return;
+      }
+      
+      const response = await apiService.updateProfile(updateData);
       
       if (response.success) {
         setSuccess('Profile updated successfully!');
@@ -175,8 +205,11 @@ export default function Settings() {
                   value={profileForm.displayName}
                   onChange={(e) => setProfileForm({...profileForm, displayName: e.target.value})}
                   className="w-full bg-white/5 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                  placeholder="Enter your display name"
+                  placeholder={profile?.displayName || "Enter your display name"}
                 />
+                {profile?.displayName && (
+                  <p className="text-white/50 text-xs mt-1">Current: {profile.displayName}</p>
+                )}
               </div>
               
               <div>
@@ -197,8 +230,13 @@ export default function Settings() {
                   value={profileForm.firstName}
                   onChange={(e) => setProfileForm({...profileForm, firstName: e.target.value})}
                   className="w-full bg-white/5 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                  placeholder="Enter your first name"
+                  placeholder={profile?.profile?.firstName || "Enter your first name"}
                 />
+                {profile?.profile?.firstName && (
+                  <p className="text-white/50 text-xs mt-1">
+                    Current: {profile.profile.firstName}
+                  </p>
+                )}
               </div>
               
               <div>
@@ -208,8 +246,13 @@ export default function Settings() {
                   value={profileForm.lastName}
                   onChange={(e) => setProfileForm({...profileForm, lastName: e.target.value})}
                   className="w-full bg-white/5 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                  placeholder="Enter your last name"
+                  placeholder={profile?.profile?.lastName || "Enter your last name"}
                 />
+                {profile?.profile?.lastName && (
+                  <p className="text-white/50 text-xs mt-1">
+                    Current: {profile.profile.lastName}
+                  </p>
+                )}
               </div>
               
               <div className="md:col-span-2">
@@ -219,8 +262,13 @@ export default function Settings() {
                   value={profileForm.phoneNumber}
                   onChange={(e) => setProfileForm({...profileForm, phoneNumber: e.target.value})}
                   className="w-full bg-white/5 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                  placeholder="+1 (555) 123-4567"
+                  placeholder={profile?.profile?.phoneNumber || "+1 (555) 123-4567"}
                 />
+                {profile?.profile?.phoneNumber && (
+                  <p className="text-white/50 text-xs mt-1">
+                    Current: {profile.profile.phoneNumber}
+                  </p>
+                )}
               </div>
             </div>
 
