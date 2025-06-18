@@ -135,3 +135,151 @@ export const validateParams = (schema: Joi.ObjectSchema) => {
     next();
   };
 };
+
+export const contextSchemas = {
+  createContext: Joi.object({
+    title: Joi.string()
+      .min(1)
+      .max(100)
+      .required()
+      .messages({
+        'string.min': 'Context title cannot be empty',
+        'string.max': 'Context title cannot exceed 100 characters',
+        'any.required': 'Context title is required'
+      }),
+    description: Joi.string()
+      .max(500)
+      .allow('')
+      .optional()
+      .messages({
+        'string.max': 'Description cannot exceed 500 characters'
+      }),
+    category: Joi.string()
+      .min(1)
+      .max(50)
+      .required()
+      .messages({
+        'string.min': 'Category cannot be empty',
+        'string.max': 'Category cannot exceed 50 characters',
+        'any.required': 'Category is required'
+      }),
+    color: Joi.string()
+      .valid('blue', 'purple', 'green', 'pink', 'orange', 'red')
+      .required()
+      .messages({
+        'any.only': 'Color must be one of: blue, purple, green, pink, orange, red',
+        'any.required': 'Color is required'
+      }),
+    settings: Joi.object({
+      temperature: Joi.number()
+        .min(0)
+        .max(2)
+        .optional(),
+      maxTokens: Joi.number()
+        .min(1)
+        .max(4000)
+        .optional(),
+      systemPrompt: Joi.string()
+        .max(2000)
+        .optional()
+    }).optional()
+  }),
+
+  updateContext: Joi.object({
+    title: Joi.string()
+      .min(1)
+      .max(100)
+      .optional()
+      .messages({
+        'string.min': 'Context title cannot be empty',
+        'string.max': 'Context title cannot exceed 100 characters'
+      }),
+    description: Joi.string()
+      .max(500)
+      .allow('')
+      .optional()
+      .messages({
+        'string.max': 'Description cannot exceed 500 characters'
+      }),
+    category: Joi.string()
+      .min(1)
+      .max(50)
+      .optional()
+      .messages({
+        'string.min': 'Category cannot be empty',
+        'string.max': 'Category cannot exceed 50 characters'
+      }),
+    color: Joi.string()
+      .valid('blue', 'purple', 'green', 'pink', 'orange', 'red')
+      .optional()
+      .messages({
+        'any.only': 'Color must be one of: blue, purple, green, pink, orange, red'
+      }),
+    settings: Joi.object({
+      temperature: Joi.number()
+        .min(0)
+        .max(2)
+        .optional(),
+      maxTokens: Joi.number()
+        .min(1)
+        .max(4000)
+        .optional(),
+      systemPrompt: Joi.string()
+        .max(2000)
+        .optional()
+    }).optional()
+  }),
+
+  createCategory: Joi.object({
+    name: Joi.string()
+      .min(1)
+      .max(50)
+      .required()
+      .messages({
+        'string.min': 'Category name cannot be empty',
+        'string.max': 'Category name cannot exceed 50 characters',
+        'any.required': 'Category name is required'
+      })
+  }),
+
+  contextFilters: Joi.object({
+    category: Joi.string().optional(),
+    search: Joi.string().max(100).optional(),
+    isActive: Joi.boolean().optional(),
+    sortBy: Joi.string()
+      .valid('title', 'lastUsed', 'createdAt', 'updatedAt')
+      .default('updatedAt')
+      .optional(),
+    sortOrder: Joi.string()
+      .valid('asc', 'desc')
+      .default('desc')
+      .optional(),
+    limit: Joi.number()
+      .min(1)
+      .max(100)
+      .default(20)
+      .optional(),
+    offset: Joi.number()
+      .min(0)
+      .default(0)
+      .optional()
+  })
+};
+
+// Params validation schemas
+export const contextParamSchemas = {
+  contextId: Joi.object({
+    contextId: Joi.string()
+      .required()
+      .messages({
+        'any.required': 'Context ID is required'
+      })
+  }),
+  categoryId: Joi.object({
+    categoryId: Joi.string()
+      .required()
+      .messages({
+        'any.required': 'Category ID is required'
+      })
+  })
+};

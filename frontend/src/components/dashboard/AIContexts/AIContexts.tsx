@@ -1,45 +1,9 @@
 // components/dashboard/AIContexts.tsx
 'use client';
-import { useState } from 'react';
-import { Search, Plus, Edit, Calendar, X, Save, Trash2, Tag } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Search, Plus, Edit, Calendar, X, Save, Trash2, Tag, Loader2 } from 'lucide-react';
+import { contextService, AIContext, ContextCategory } from '@/lib/contextService';
 
-interface ContextCard {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  lastUsed: string;
-  color: string;
-}
-
-const sampleContexts: ContextCard[] = [
-  {
-    id: '1',
-    title: 'Meeting Assistant',
-    description: 'Help with meeting notes, agendas, and follow-ups',
-    category: 'Business',
-    lastUsed: '2023/06/15',
-    color: 'blue'
-  },
-  {
-    id: '2', 
-    title: 'Sales Call Coach',
-    description: 'Assist with sales strategies, objection handling, and closing techniques',
-    category: 'Business',
-    lastUsed: '2023/06/06',
-    color: 'blue'
-  },
-  {
-    id: '3',
-    title: 'Math Homework Helper',
-    description: 'Support with mathematical concepts, problem-solving, and explanations', 
-    category: 'Education',
-    lastUsed: '2023/05/28',
-    color: 'purple'
-  }
-];
-
-const defaultCategories = ['All', 'Business', 'Education', 'Personal', 'Creative'];
 const colorOptions = [
   { name: 'blue', class: 'border-l-blue-500', bg: 'bg-blue-500' },
   { name: 'purple', class: 'border-l-purple-500', bg: 'bg-purple-500' },
@@ -52,14 +16,17 @@ const colorOptions = [
 export default function AIContexts() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
-  const [contexts, setContexts] = useState<ContextCard[]>(sampleContexts);
-  const [categories, setCategories] = useState<string[]>(defaultCategories);
+  const [contexts, setContexts] = useState<AIContext[]>([]);
+  const [categories, setCategories] = useState<ContextCategory[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   
   // Modal states
   const [showNewContextModal, setShowNewContextModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showNewLabelModal, setShowNewLabelModal] = useState(false);
-  const [editingContext, setEditingContext] = useState<ContextCard | null>(null);
+  const [editingContext, setEditingContext] = useState<AIContext | null>(null);
+  const [submitting, setSubmitting] = useState(false);
   
   // Form states
   const [newContextForm, setNewContextForm] = useState({
@@ -77,6 +44,31 @@ export default function AIContexts() {
   });
   
   const [newLabelForm, setNewLabelForm] = useState({ name: '' });
+
+  // Load initial data
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const [contextsResponse, categoriesResponse] = await Promise.all([
+        contextService.getContexts(),
+        contextService.getCategories()
+      ]);
+      
+      setContexts(contextsResponse.contexts);
+      setCategories(categoriesResponse);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load data');
+      console.error('Failed to load data:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredContexts = contexts.filter(context => {
     const matchesSearch = context.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -104,26 +96,26 @@ export default function AIContexts() {
     setNewContextForm({
       title: '',
       description: '',
-      category: 'Personal',
+      category: categories.length > 0 ? categories[0].name : 'Personal',
       color: 'blue'
     });
     setShowNewContextModal(true);
   };
 
-  const handleCreateContext = () => {
-    if (!newContextForm.title.trim()) return;
+  const handleCreateContext = async () => {
+    if (!newContextForm.title.trim() || submitting) return;
     
-    const newContext: ContextCard = {
-      id: Date.now().toString(),
-      title: newContextForm.title,
-      description: newContextForm.description,
-      category: newContextForm.category,
-      lastUsed: new Date().toISOString().split('T')[0].replace(/-/g, '/'),
-      color: newContextForm.color
-    };
-    
-    setContexts([...contexts, newContext]);
-    setShowNewContextModal(false);
+    try {
+      setSubmitting(true);
+      const newContext = await contextService.createContext(newContextForm);
+      setContexts([newContext, ...contexts]);
+      setShowNewContextModal(false);
+      setNewContextForm({ title: '', description: '', category: 'Personal', color: 'blue' });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create context');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleNewLabel = () => {
@@ -131,66 +123,75 @@ export default function AIContexts() {
     setShowNewLabelModal(true);
   };
 
-  const handleCreateLabel = () => {
-    if (!newLabelForm.name.trim()) return;
+  const handleCreateLabel = async () => {
+    if (!newLabelForm.name.trim() || submitting) return;
     
-    const labelName = newLabelForm.name.trim();
-    if (!categories.includes(labelName)) {
-      setCategories([...categories.slice(0, 1), labelName, ...categories.slice(1)]);
-    }
-    setShowNewLabelModal(false);
-  };
-
-  const handleEditContext = (contextId: string) => {
-    const context = contexts.find(c => c.id === contextId);
-    if (context) {
-      setEditingContext(context);
-      setEditContextForm({
-        title: context.title,
-        description: context.description,
-        category: context.category,
-        color: context.color
-      });
-      setShowEditModal(true);
+    try {
+      setSubmitting(true);
+      const newCategory = await contextService.createCategory(newLabelForm.name.trim());
+      setCategories([...categories, newCategory]);
+      setShowNewLabelModal(false);
+      setNewLabelForm({ name: '' });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create category');
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const handleUpdateContext = () => {
-    if (!editingContext || !editContextForm.title.trim()) return;
-    
-    setContexts(contexts.map(c => 
-      c.id === editingContext.id 
-        ? { 
-            ...c, 
-            title: editContextForm.title,
-            description: editContextForm.description,
-            category: editContextForm.category,
-            color: editContextForm.color
-          }
-        : c
-    ));
-    setShowEditModal(false);
-    setEditingContext(null);
+  const handleEditContext = (context: AIContext) => {
+    setEditingContext(context);
+    setEditContextForm({
+      title: context.title,
+      description: context.description,
+      category: context.category,
+      color: context.color
+    });
+    setShowEditModal(true);
   };
 
-  const handleDeleteContext = (contextId: string) => {
-    if (confirm('Are you sure you want to delete this context?')) {
+  const handleUpdateContext = async () => {
+    if (!editingContext || !editContextForm.title.trim() || submitting) return;
+    
+    try {
+      setSubmitting(true);
+      const updatedContext = await contextService.updateContext(editingContext.id, editContextForm);
+      setContexts(contexts.map(c => c.id === editingContext.id ? updatedContext : c));
+      setShowEditModal(false);
+      setEditingContext(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update context');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDeleteContext = async (contextId: string) => {
+    if (!confirm('Are you sure you want to delete this context?')) return;
+    
+    try {
+      await contextService.deleteContext(contextId);
       setContexts(contexts.filter(c => c.id !== contextId));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete context');
     }
   };
 
-  const handleUseContext = (contextId: string) => {
-    const context = contexts.find(c => c.id === contextId);
-    if (context) {
-      // Update the last used date
+  const handleUseContext = async (contextId: string) => {
+    try {
+      const updatedContext = await contextService.useContext(contextId);
+      
+      // Update the context list to reflect the active state change
       setContexts(contexts.map(c => 
         c.id === contextId 
-          ? { ...c, lastUsed: new Date().toISOString().split('T')[0].replace(/-/g, '/') }
-          : c
+          ? updatedContext
+          : { ...c, isActive: false }
       ));
       
-      // In a real app, this would navigate to the chat interface with the selected context
-      alert(`Context "${context.title}" is now active!\n\nYou can now start chatting with this AI assistant context.`);
+      // Show success message or navigate to chat interface
+      alert(`Context "${updatedContext.title}" is now active!\n\nYou can now start chatting with this AI assistant context.`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to activate context');
     }
   };
 
@@ -203,10 +204,38 @@ export default function AIContexts() {
     setShowEditModal(false);
     setShowNewLabelModal(false);
     setEditingContext(null);
+    setError(null);
   };
+
+  // Get all unique category names for the filter buttons
+  const allCategoryNames = ['All', ...Array.from(new Set(categories.map(c => c.name)))];
+
+  if (loading) {
+    return (
+      <div className="flex-1 p-8 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 text-white animate-spin mx-auto mb-4" />
+          <p className="text-white/70">Loading your AI contexts...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 p-8">
+      {/* Error Banner */}
+      {error && (
+        <div className="mb-6 bg-red-500/10 border border-red-500/20 rounded-lg p-4 flex items-center justify-between">
+          <p className="text-red-400">{error}</p>
+          <button 
+            onClick={() => setError(null)}
+            className="text-red-400 hover:text-red-300"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex justify-between items-start mb-8">
         <div>
@@ -216,14 +245,16 @@ export default function AIContexts() {
         <div className="flex gap-3">
           <button 
             onClick={handleNewLabel}
-            className="bg-white/10 border border-white/20 text-white px-4 py-2 rounded-lg font-medium hover:bg-white/20 transition-colors flex items-center gap-2"
+            disabled={submitting}
+            className="bg-white/10 border border-white/20 text-white px-4 py-2 rounded-lg font-medium hover:bg-white/20 transition-colors flex items-center gap-2 disabled:opacity-50"
           >
             <Plus className="w-4 h-4" />
             New Label
           </button>
           <button 
             onClick={handleNewContext}
-            className="bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors flex items-center gap-2"
+            disabled={submitting}
+            className="bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors flex items-center gap-2 disabled:opacity-50"
           >
             <Plus className="w-4 h-4" />
             New context
@@ -245,7 +276,7 @@ export default function AIContexts() {
         </div>
 
         <div className="flex gap-2 flex-wrap">
-          {categories.map((category) => (
+          {allCategoryNames.map((category) => (
             <button
               key={category}
               onClick={() => handleCategoryFilter(category)}
@@ -266,17 +297,26 @@ export default function AIContexts() {
         {filteredContexts.map((context) => (
           <div
             key={context.id}
-            className={`bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-6 hover:bg-white/10 transition-all duration-200 border-l-4 ${getContextColorClasses(context.color)}`}
+            className={`bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-6 hover:bg-white/10 transition-all duration-200 border-l-4 ${getContextColorClasses(context.color)} ${
+              context.isActive ? 'ring-2 ring-white/30' : ''
+            }`}
           >
             {/* Context Header */}
             <div className="flex items-start justify-between mb-4">
               <div className="flex-1">
-                <h3 className="text-white font-semibold mb-1">{context.title}</h3>
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="text-white font-semibold">{context.title}</h3>
+                  {context.isActive && (
+                    <span className="text-xs bg-green-500 text-white px-2 py-1 rounded-full">
+                      Active
+                    </span>
+                  )}
+                </div>
                 <p className="text-white/70 text-sm">{context.description}</p>
               </div>
               <div className="flex gap-1">
                 <button 
-                  onClick={() => handleEditContext(context.id)}
+                  onClick={() => handleEditContext(context)}
                   className="text-white/50 hover:text-white p-1 transition-colors"
                   title="Edit context"
                 >
@@ -299,23 +339,24 @@ export default function AIContexts() {
               </span>
               <div className="flex items-center gap-1 text-white/50 text-xs">
                 <Calendar className="w-3 h-3" />
-                {context.lastUsed}
+                {new Date(context.lastUsed).toLocaleDateString()}
               </div>
             </div>
 
             {/* Action Button */}
             <button 
               onClick={() => handleUseContext(context.id)}
-              className="w-full bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
+              disabled={context.isActive}
+              className="w-full bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span>Use Context</span>
+              <span>{context.isActive ? 'Currently Active' : 'Use Context'}</span>
             </button>
           </div>
         ))}
       </div>
 
       {/* Empty State */}
-      {filteredContexts.length === 0 && (
+      {filteredContexts.length === 0 && !loading && (
         <div className="text-center py-12">
           <div className="text-white/30 mb-4">
             <Search className="w-12 h-12 mx-auto" />
@@ -375,9 +416,9 @@ export default function AIContexts() {
                   onChange={(e) => setNewContextForm({...newContextForm, category: e.target.value})}
                   className="w-full bg-white/5 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/30"
                 >
-                  {categories.filter(c => c !== 'All').map(category => (
-                    <option key={category} value={category} className="bg-gray-800">
-                      {category}
+                  {categories.map(category => (
+                    <option key={category.id} value={category.name} className="bg-gray-800">
+                      {category.name}
                     </option>
                   ))}
                 </select>
@@ -402,17 +443,22 @@ export default function AIContexts() {
             <div className="flex gap-3 mt-6">
               <button
                 onClick={closeModal}
-                className="flex-1 bg-white/10 text-white py-2 px-4 rounded-lg hover:bg-white/20 transition-colors"
+                disabled={submitting}
+                className="flex-1 bg-white/10 text-white py-2 px-4 rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
                 onClick={handleCreateContext}
-                disabled={!newContextForm.title.trim()}
+                disabled={!newContextForm.title.trim() || submitting}
                 className="flex-1 bg-white text-black py-2 px-4 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                <Save className="w-4 h-4" />
-                Create
+                {submitting ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4" />
+                )}
+                {submitting ? 'Creating...' : 'Create'}
               </button>
             </div>
           </div>
@@ -457,9 +503,9 @@ export default function AIContexts() {
                   onChange={(e) => setEditContextForm({...editContextForm, category: e.target.value})}
                   className="w-full bg-white/5 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/30"
                 >
-                  {categories.filter(c => c !== 'All').map(category => (
-                    <option key={category} value={category} className="bg-gray-800">
-                      {category}
+                  {categories.map(category => (
+                    <option key={category.id} value={category.name} className="bg-gray-800">
+                      {category.name}
                     </option>
                   ))}
                 </select>
@@ -484,17 +530,22 @@ export default function AIContexts() {
             <div className="flex gap-3 mt-6">
               <button
                 onClick={closeModal}
-                className="flex-1 bg-white/10 text-white py-2 px-4 rounded-lg hover:bg-white/20 transition-colors"
+                disabled={submitting}
+                className="flex-1 bg-white/10 text-white py-2 px-4 rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
                 onClick={handleUpdateContext}
-                disabled={!editContextForm.title.trim()}
+                disabled={!editContextForm.title.trim() || submitting}
                 className="flex-1 bg-white text-black py-2 px-4 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                <Save className="w-4 h-4" />
-                Update
+                {submitting ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4" />
+                )}
+                {submitting ? 'Updating...' : 'Update'}
               </button>
             </div>
           </div>
@@ -528,17 +579,22 @@ export default function AIContexts() {
             <div className="flex gap-3 mt-6">
               <button
                 onClick={closeModal}
-                className="flex-1 bg-white/10 text-white py-2 px-4 rounded-lg hover:bg-white/20 transition-colors"
+                disabled={submitting}
+                className="flex-1 bg-white/10 text-white py-2 px-4 rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
                 onClick={handleCreateLabel}
-                disabled={!newLabelForm.name.trim()}
+                disabled={!newLabelForm.name.trim() || submitting}
                 className="flex-1 bg-white text-black py-2 px-4 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                <Tag className="w-4 h-4" />
-                Create
+                {submitting ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Tag className="w-4 h-4" />
+                )}
+                {submitting ? 'Creating...' : 'Create'}
               </button>
             </div>
           </div>
