@@ -81,11 +81,15 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#191919] flex">
-      <Sidebar 
-        activeSection={activeSection} 
-        onSectionChange={setActiveSection}
-      />
-      {renderContent()}
+      <div className="fixed left-0 top-0 h-screen">
+        <Sidebar 
+          activeSection={activeSection} 
+          onSectionChange={setActiveSection}
+        />
+      </div>
+      <div className="flex-1 ml-64 overflow-y-auto">
+        {renderContent()}
+      </div>
     </div>
   );
 }
