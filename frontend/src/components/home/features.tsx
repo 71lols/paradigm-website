@@ -49,7 +49,7 @@ export default function Features() {
               <div className="h-full flex flex-col justify-end">
                 <h3 className="text-[#D9D9D9] text-2xl sm:text-3xl font-semibold mb-4">Ask Anything</h3>
                 <p className="text-[#888888] text-sm sm:text-base leading-relaxed">
-                  Get instant answers about what you're seeing, hearing, or 
+                  Get instant answers about what you&apos;re seeing, hearing, or 
                   working on without switching apps.
                 </p>
               </div>
@@ -146,7 +146,7 @@ export default function Features() {
                 <h3 className="text-[#D9D9D9] text-2xl sm:text-3xl font-semibold mb-4">Works with Everything</h3>
                 <p className="text-[#888888] text-sm sm:text-base leading-relaxed">
                   Seamlessly integrates with all your apps and tools 
-                  without interrupting what you're doing.
+                  without interrupting what you&apos;re doing.
                 </p>
               </div>
               <div className="flex items-center justify-center">
