@@ -14,8 +14,7 @@ import {
   Key,
   AlertTriangle,
   Check,
-  X,
-  Edit3
+  X
 } from 'lucide-react';
 
 // Profile interface that matches your backend response
@@ -35,6 +34,18 @@ interface Profile {
     notifications?: boolean;
     theme?: string;
   };
+}
+
+interface ApiError {
+  message: string;
+  status?: number;
+}
+
+interface UpdateData {
+  displayName?: string;
+  firstName?: string;
+  lastName?: string;
+  phoneNumber?: string;
 }
 
 const tabs = [
@@ -88,11 +99,11 @@ export default function Settings() {
       
       if (response.success) {
         setProfile(response.data);
-        // Don't update form here - let useEffect handle it
       } else {
         setError(response.message || 'Failed to load profile');
       }
-    } catch (error: any) {
+    } catch (err) {
+      const error = err as ApiError;
       setError(error.message || 'Failed to load profile');
     } finally {
       setLoading(false);
@@ -106,7 +117,7 @@ export default function Settings() {
       setSuccess('');
       
       // Only send fields that have values (non-empty strings)
-      const updateData: any = {};
+      const updateData: UpdateData = {};
       
       if (profileForm.displayName.trim()) {
         updateData.displayName = profileForm.displayName.trim();
@@ -136,7 +147,8 @@ export default function Settings() {
       } else {
         setError(response.message || 'Failed to update profile');
       }
-    } catch (error: any) {
+    } catch (err) {
+      const error = err as ApiError;
       setError(error.message || 'Failed to update profile');
     } finally {
       setSaving(false);
@@ -156,7 +168,8 @@ export default function Settings() {
       } else {
         setError(response.message || 'Failed to delete account');
       }
-    } catch (error: any) {
+    } catch (err) {
+      const error = err as ApiError;
       setError(error.message || 'Failed to delete account');
     } finally {
       setSaving(false);
@@ -180,7 +193,8 @@ export default function Settings() {
       } else {
         setError(response.message || 'Failed to send reset email');
       }
-    } catch (error: any) {
+    } catch (err) {
+      const error = err as ApiError;
       setError(error.message || 'Failed to send reset email');
     } finally {
       setSaving(false);
