@@ -46,7 +46,7 @@ export default function HowItWorks() {
             <div>
               <h3 className="text-[#D9D9D9] text-xl font-semibold mb-3">Sees what you see</h3>
               <p className="text-[#888888] text-sm leading-relaxed">
-                Sees your entire screen to know what you're working on across 
+                Sees your entire screen to know what you&apos;re working on across 
                 all apps and websites
               </p>
             </div>
@@ -77,8 +77,8 @@ export default function HowItWorks() {
               {/* Terminal Content */}
               <div className="space-y-3 text-sm">
                 <p className="text-[#888888]">
-                  I'm thinking of building this AI assistant that can be able to 
-                  see what you're seeing and hear what you're hearing.
+                  I&apos;m thinking of building this AI assistant that can be able to 
+                  see what you&apos;re seeing and hear what you&apos;re hearing.
                 </p>
                 <div className="bg-[#1E3A8A] text-[#D9D9D9] px-3 py-2 rounded inline-block">
                   Awesome! What tech stack should we use
