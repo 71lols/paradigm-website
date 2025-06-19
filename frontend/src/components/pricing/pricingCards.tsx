@@ -12,17 +12,21 @@ interface PricingCardProps {
   ellipseColor: string;
 }
 
+interface WhiteButtonProps {
+  children: React.ReactNode;
+  className?: string;
+  variant?: "primary" | "secondary";
+  onClick?: () => void;
+  disabled?: boolean;
+  type?: "button" | "submit" | "reset";
+}
+
 const WhiteButton = ({ 
   children, 
   className = "", 
   variant = "primary",
   ...props 
-}: { 
-  children: React.ReactNode; 
-  className?: string;
-  variant?: "primary" | "secondary";
-  [key: string]: any;
-}) => {
+}: WhiteButtonProps) => {
   const baseStyles = "px-6 py-3 rounded-lg font-medium transition-all duration-200 text-center";
   
   const variants = {
