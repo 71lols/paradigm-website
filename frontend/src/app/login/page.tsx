@@ -6,6 +6,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/components/auth/authContext";
 
+// Define proper error type instead of using 'any'
+interface AuthError {
+  message: string;
+  code?: string;
+}
+
 const GoogleIcon = () => (
   <svg className="w-4 h-4" viewBox="0 0 24 24">
     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -76,7 +82,8 @@ export default function LoginPage() {
         // Redirect to dashboard
         router.push("/dashboard");
       }
-    } catch (error: any) {
+    } catch (err) {
+      const error = err as AuthError;
       setError(error.message || "An error occurred during Google sign in");
     } finally {
       setLoading(false);
@@ -95,7 +102,8 @@ export default function LoginPage() {
         // Redirect to dashboard
         router.push("/dashboard");
       }
-    } catch (error: any) {
+    } catch (err) {
+      const error = err as AuthError;
       setError(error.message || "An error occurred during GitHub sign in");
     } finally {
       setLoading(false);
@@ -115,7 +123,8 @@ export default function LoginPage() {
         // Success! Redirect to dashboard
         router.push("/dashboard");
       }
-    } catch (error: any) {
+    } catch (err) {
+      const error = err as AuthError;
       setError(error.message || "An error occurred during sign in");
     } finally {
       setLoading(false);
@@ -126,7 +135,9 @@ export default function LoginPage() {
     <div className="min-h-screen bg-[#191919] flex items-center justify-center p-4">
       {/* Logo */}
       <div className="absolute top-8 left-8">
-        <span className="text-white text-xl font-semibold"><a href="/">LOGO</a></span>
+        <span className="text-white text-xl font-semibold">
+          <Link href="/">LOGO</Link>
+        </span>
       </div>
 
       {/* Login Container */}
@@ -281,7 +292,7 @@ export default function LoginPage() {
             {/* Sign Up Link */}
             <div className="text-center">
               <span className="text-white/70 text-sm">
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
                 <Link href="/signup" className="text-white font-medium hover:text-white/80">
                   Sign up
                 </Link>
