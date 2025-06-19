@@ -91,9 +91,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (response.success && response.data?.customToken) {
         // Sign in to Firebase with the custom token from backend
-        await signInWithCustomToken(auth, response.data.customToken);
+        const userCredential = await signInWithCustomToken(auth, response.data.customToken);
         
-        return { user: response.data.user };
+        // Return the Firebase user, not the backend user data
+        return { user: userCredential.user };
       } else {
         return { error: response.message || 'Failed to create account' };
       }

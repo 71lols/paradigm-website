@@ -2,9 +2,9 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/components/auth/authContext';
-import { apiService } from '@/lib/api';
+import { apiService, type User } from '@/lib/api';
 import { 
-  User, 
+  User as UserIcon, 
   Shield, 
   Database, 
   CreditCard, 
@@ -17,24 +17,8 @@ import {
   X
 } from 'lucide-react';
 
-// Profile interface that matches your backend response
-interface Profile {
-  uid: string;
-  email: string;
-  displayName?: string;
-  role: string;
-  createdAt: string;
-  profile?: {
-    firstName?: string;
-    lastName?: string;
-    phoneNumber?: string;
-    avatar?: string;
-  };
-  preferences?: {
-    notifications?: boolean;
-    theme?: string;
-  };
-}
+// Use the User type from API instead of custom Profile interface
+type Profile = User;
 
 interface ApiError {
   message: string;
@@ -49,7 +33,7 @@ interface UpdateData {
 }
 
 const tabs = [
-  { id: 'profile', label: 'Personal profile', icon: User },
+  { id: 'profile', label: 'Personal profile', icon: UserIcon },
   { id: 'security', label: 'Security & access', icon: Shield },
   { id: 'privacy', label: 'Data & privacy', icon: Database },
   { id: 'billing', label: 'Billing', icon: CreditCard },
@@ -97,7 +81,7 @@ export default function Settings() {
       setError('');
       const response = await apiService.getProfile();
       
-      if (response.success) {
+      if (response.success && response.data) {
         setProfile(response.data);
       } else {
         setError(response.message || 'Failed to load profile');
