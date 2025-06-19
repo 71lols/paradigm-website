@@ -4,8 +4,6 @@ import {
   NavBody,
   NavItems,
   MobileNav,
-  NavbarLogo,
-  NavbarButton,
   MobileNavHeader,
   MobileNavToggle,
   MobileNavMenu,
