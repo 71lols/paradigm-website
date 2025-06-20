@@ -146,9 +146,16 @@ export default function SignUpPage() {
     <div className="min-h-screen bg-[#191919] flex items-center justify-center p-4">
       {/* Logo */}
       <div className="absolute top-8 left-8">
-        <span className="text-white text-xl font-semibold">
-          <Link href="/">LOGO</Link>
-        </span>
+        <Link href="/">
+          <Image
+            src="/Logo.png"
+            alt="Paradigm Logo"
+            width={150}
+            height={125}
+            className="object-contain border-white"
+            priority
+          />
+        </Link>
       </div>
 
       {/* Sign Up Container */}

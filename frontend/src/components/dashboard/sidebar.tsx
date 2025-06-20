@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Search, Layers, Settings, Download } from 'lucide-react';
 import UserProfile from './userProfile';
+import Image from "next/image";
 
 interface SidebarProps {
   activeSection?: string;
@@ -33,7 +34,14 @@ export default function Sidebar({ activeSection = 'context', onSectionChange }: 
     <div className="w-64 h-screen bg-[#191919] border-r border-white/10 flex flex-col">
       {/* Logo */}
       <div className="p-6 border-b border-white/10">
-        <h1 className="text-white text-xl font-semibold">LOGO</h1>
+        <Image
+          src="/Logo.png"
+          alt="Paradigm Logo"
+          width={150}
+          height={125}
+          className="object-contain border-white"
+          priority
+        />
       </div>
 
       {/* Search */}
