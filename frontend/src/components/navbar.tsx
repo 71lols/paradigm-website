@@ -10,15 +10,23 @@ import {
 } from "@/components/UI/resizable-navbar";
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 // Custom NavbarLogo to match your theme
 const CustomNavbarLogo = () => {
   return (
     <a
       href="#"
-      className="relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal"
+      className="relative z-20 mr-4 flex items-center justify-center space-x-2 px-2 pb-1 text-sm font-normal"
     >
-      <span className="font-semibold text-[#D9D9D9]">LOGO</span>
+      <Image
+        src="/Logo.png"
+        alt="Paradigm Logo"
+        width={150}
+        height={125}
+        className="object-contain border-white"
+        priority
+      />
     </a>
   );
 };
