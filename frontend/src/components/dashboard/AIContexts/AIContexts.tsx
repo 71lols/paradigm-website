@@ -378,8 +378,8 @@ export default function AIContexts() {
 
       {/* New Context Modal */}
       {showNewContextModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-gray-900 rounded-lg p-6 w-full max-w-md mx-4">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-[#191919] border border-white/10 rounded-lg p-6 w-full max-w-md mx-4 shadow-2xl">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold text-white">Create New Context</h2>
               <button onClick={closeModal} className="text-white/50 hover:text-white">
@@ -417,7 +417,7 @@ export default function AIContexts() {
                   className="w-full bg-white/5 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/30"
                 >
                   {categories.map(category => (
-                    <option key={category.id} value={category.name} className="bg-gray-800">
+                    <option key={category.id} value={category.name} className="bg-[#191919]">
                       {category.name}
                     </option>
                   ))}
@@ -432,7 +432,7 @@ export default function AIContexts() {
                       key={color.name}
                       onClick={() => setNewContextForm({...newContextForm, color: color.name})}
                       className={`w-8 h-8 rounded-full ${color.bg} ${
-                        newContextForm.color === color.name ? 'ring-2 ring-white ring-offset-2 ring-offset-gray-900' : ''
+                        newContextForm.color === color.name ? 'ring-2 ring-white ring-offset-2 ring-offset-[#191919]' : ''
                       }`}
                     />
                   ))}
@@ -444,7 +444,7 @@ export default function AIContexts() {
               <button
                 onClick={closeModal}
                 disabled={submitting}
-                className="flex-1 bg-white/10 text-white py-2 px-4 rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50"
+                className="flex-1 bg-white/5 border border-white/20 text-white py-2 px-4 rounded-lg hover:bg-white/10 transition-colors disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -467,8 +467,8 @@ export default function AIContexts() {
 
       {/* Edit Context Modal */}
       {showEditModal && editingContext && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-gray-900 rounded-lg p-6 w-full max-w-md mx-4">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-[#191919] border border-white/10 rounded-lg p-6 w-full max-w-md mx-4 shadow-2xl">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold text-white">Edit Context</h2>
               <button onClick={closeModal} className="text-white/50 hover:text-white">
@@ -504,7 +504,7 @@ export default function AIContexts() {
                   className="w-full bg-white/5 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/30"
                 >
                   {categories.map(category => (
-                    <option key={category.id} value={category.name} className="bg-gray-800">
+                    <option key={category.id} value={category.name} className="bg-[#191919]">
                       {category.name}
                     </option>
                   ))}
@@ -519,7 +519,7 @@ export default function AIContexts() {
                       key={color.name}
                       onClick={() => setEditContextForm({...editContextForm, color: color.name})}
                       className={`w-8 h-8 rounded-full ${color.bg} ${
-                        editContextForm.color === color.name ? 'ring-2 ring-white ring-offset-2 ring-offset-gray-900' : ''
+                        editContextForm.color === color.name ? 'ring-2 ring-white ring-offset-2 ring-offset-[#191919]' : ''
                       }`}
                     />
                   ))}
@@ -531,7 +531,7 @@ export default function AIContexts() {
               <button
                 onClick={closeModal}
                 disabled={submitting}
-                className="flex-1 bg-white/10 text-white py-2 px-4 rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50"
+                className="flex-1 bg-white/5 border border-white/20 text-white py-2 px-4 rounded-lg hover:bg-white/10 transition-colors disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -554,8 +554,8 @@ export default function AIContexts() {
 
       {/* New Label Modal */}
       {showNewLabelModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-gray-900 rounded-lg p-6 w-full max-w-md mx-4">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-[#191919] border border-white/10 rounded-lg p-6 w-full max-w-md mx-4 shadow-2xl">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold text-white">Create New Label</h2>
               <button onClick={closeModal} className="text-white/50 hover:text-white">
@@ -580,7 +580,7 @@ export default function AIContexts() {
               <button
                 onClick={closeModal}
                 disabled={submitting}
-                className="flex-1 bg-white/10 text-white py-2 px-4 rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50"
+                className="flex-1 bg-white/5 border border-white/20 text-white py-2 px-4 rounded-lg hover:bg-white/10 transition-colors disabled:opacity-50"
               >
                 Cancel
               </button>
