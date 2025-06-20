@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 export default function Footer() {
   // Smooth scroll function
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, link: string) => {
@@ -44,8 +46,14 @@ export default function Footer() {
             
             {/* Brand */}
             <div className="space-y-2">
-              <h3 className="text-[#D9D9D9] text-xl font-semibold">Paradigm</h3>
-              <h4 className="text-[#D9D9D9] text-lg">The Paradigm Shift</h4>
+              <Image
+                src="/Logo.png"
+                alt="Paradigm Logo"
+                width={150}
+                height={125}
+                className="object-contain border-white"
+                priority
+              />
             </div>
             
             {/* Copyright */}
