@@ -81,7 +81,7 @@ export default function UserProfile() {
 
       {/* Dropdown Menu */}
       {isDropdownOpen && (
-        <div className="absolute bottom-full left-0 right-0 mb-2 bg-[#2a2a2a] border border-white/20 rounded-lg shadow-lg py-2">
+        <div className="absolute bottom-full left-0 right-0 mb-2 bg-[#2a2a2a] border border-white/20 rounded-lg shadow-lg">
           <div className="px-4 py-2 border-b border-white/10">
             <p className="text-white text-sm font-medium truncate">
               {getDisplayName()}
@@ -90,30 +90,7 @@ export default function UserProfile() {
               {getDisplayEmail()}
             </p>
           </div>
-          
-          <button
-            onClick={() => {
-              setIsDropdownOpen(false);
-              // Navigate to profile settings
-            }}
-            className="w-full flex items-center gap-3 px-4 py-2 text-white/70 hover:text-white hover:bg-white/5 transition-colors"
-          >
-            <User className="w-4 h-4" />
-            <span className="text-sm">Profile</span>
-          </button>
-          
-          <button
-            onClick={() => {
-              setIsDropdownOpen(false);
-              // Navigate to settings
-            }}
-            className="w-full flex items-center gap-3 px-4 py-2 text-white/70 hover:text-white hover:bg-white/5 transition-colors"
-          >
-            <Settings className="w-4 h-4" />
-            <span className="text-sm">Settings</span>
-          </button>
-          
-          <div className="border-t border-white/10 mt-2 pt-2">
+          <div className="border-white/10">
             <button
               onClick={handleSignOut}
               className="w-full flex items-center gap-3 px-4 py-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors"
