@@ -5,7 +5,11 @@ import { useAuth } from '@/components/auth/authContext';
 import { LogOut, Settings, User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-export default function UserProfile() {
+interface UserProfileProps {
+  isCollapsed?: boolean;
+}
+
+export default function UserProfile({ isCollapsed = false }: UserProfileProps) {
   const { user, logout } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -62,26 +66,35 @@ export default function UserProfile() {
       {/* User Profile Button */}
       <button
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        className="flex items-center gap-3 px-3 py-2 w-full rounded-lg hover:bg-white/5 transition-colors"
+        className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} px-3 py-2 w-full rounded-lg hover:bg-white/5 transition-colors`}
+        title={isCollapsed ? getDisplayName() : undefined}
       >
-        <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+        <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
           <span className="text-white text-sm font-medium">
             {getInitials(user.displayName, user.email)}
           </span>
         </div>
-        <div className="flex-1 min-w-0 text-left">
-          <p className="text-white text-sm font-medium truncate">
-            {getDisplayName()}
-          </p>
-          <p className="text-white/50 text-xs truncate">
-            {getDisplayEmail()}
-          </p>
-        </div>
+        {!isCollapsed && (
+          <div className="flex-1 min-w-0 text-left">
+            <p className="text-white text-sm font-medium truncate">
+              {getDisplayName()}
+            </p>
+            <p className="text-white/50 text-xs truncate">
+              {getDisplayEmail()}
+            </p>
+          </div>
+        )}
       </button>
 
       {/* Dropdown Menu */}
       {isDropdownOpen && (
-        <div className="absolute bottom-full left-0 right-0 mb-2 bg-[#2a2a2a] border border-white/20 rounded-lg shadow-lg">
+        <div 
+          className={`absolute bottom-full mb-2 bg-[#2a2a2a] border border-white/20 rounded-lg shadow-lg z-50 ${
+            isCollapsed 
+              ? 'left-0 w-56' // When collapsed, position dropdown to the right
+              : 'left-0 right-0' // When expanded, span full width
+          }`}
+        >
           <div className="px-4 py-2 border-b border-white/10">
             <p className="text-white text-sm font-medium truncate">
               {getDisplayName()}
