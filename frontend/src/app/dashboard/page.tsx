@@ -6,10 +6,11 @@ import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/dashboard/sidebar';
 import AIContexts from '@/components/dashboard/AIContexts/AIContexts';
 import Settings from '@/components/dashboard/Settings/Settings';
+import Activity from '@/components/dashboard/Activity/Activity';
 
 export default function DashboardPage() {
   const { user, loading: authLoading } = useAuth();
-  const [activeSection, setActiveSection] = useState('context');
+  const [activeSection, setActiveSection] = useState('activity'); // Changed default to activity
   const router = useRouter();
 
   useEffect(() => {
@@ -36,12 +37,14 @@ export default function DashboardPage() {
 
   const renderContent = () => {
     switch (activeSection) {
+      case 'activity':
+        return <Activity />;
       case 'context':
         return <AIContexts />;
       case 'settings':
         return <Settings />;
       default:
-        return <AIContexts />;
+        return <Activity />;
     }
   };
 

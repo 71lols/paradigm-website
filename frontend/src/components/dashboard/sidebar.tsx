@@ -1,7 +1,7 @@
 // components/dashboard/Sidebar.tsx
 'use client';
 import { useState } from 'react';
-import { Search, Layers, Settings, Download, ChevronRight } from 'lucide-react';
+import { Search, Layers, Settings, Download, ChevronRight, FileText } from 'lucide-react';
 import UserProfile from './userProfile';
 import Image from "next/image";
 
@@ -16,6 +16,11 @@ export default function Sidebar({ activeSection = 'context', onSectionChange }: 
   const [isLogoHovered, setIsLogoHovered] = useState(false);
 
   const menuItems = [
+    {
+      id: 'activity',
+      label: 'Activity',
+      icon: FileText,
+    },
     {
       id: 'context',
       label: 'Context',
