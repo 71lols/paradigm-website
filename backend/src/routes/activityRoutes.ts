@@ -32,7 +32,6 @@ router.get('/', verifyToken, async (req: AuthenticatedRequest, res: Response): P
 
     // Sort activities by createdAt in descending order on the server side
     activities.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
     res.json({
       success: true,
       data: activities

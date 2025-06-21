@@ -11,6 +11,7 @@ import {
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useAuth } from "@/components/auth/authContext";
 
 // Custom NavbarLogo to match your theme
 const CustomNavbarLogo = () => {
@@ -32,6 +33,7 @@ const CustomNavbarLogo = () => {
 };
 
 export default function CustomNavbar() {
+  const { user, loading } = useAuth();
   const navItems = [
     {
       name: "How it works",
@@ -98,16 +100,31 @@ export default function CustomNavbar() {
           onItemClick={(e, link) => handleNavClick(e, link)}
         />
         <div className="flex items-center gap-3 relative z-10">
-          <Link href="/login" className="cursor-pointer relative z-10">
-            <span className="block px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-80 text-[#D9D9D9] hover:text-white cursor-pointer">
-              Login
-            </span>
-          </Link>
-          <Link href="/signup" className="cursor-pointer relative z-10">
-            <span className="block px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-80 bg-[#D9D9D9]/10 border-2 border-[#515151] text-[#D9D9D9] cursor-pointer">
-              Sign up
-            </span>
-          </Link>
+          {user ? (
+            <>
+              <span className="block px-4 py-2 rounded-xl text-sm font-medium text-[#D9D9D9]">
+                Welcome, {user.displayName || user.email}
+              </span>
+              <Link href="/dashboard" className="cursor-pointer relative z-10">
+                <span className="block px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-80 bg-[#D9D9D9]/10 border-2 border-[#515151] text-[#D9D9D9] cursor-pointer">
+                  Dashboard
+                </span>
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="cursor-pointer relative z-10">
+                <span className="block px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-80 text-[#D9D9D9] hover:text-white cursor-pointer">
+                  Login
+                </span>
+              </Link>
+              <Link href="/signup" className="cursor-pointer relative z-10">
+                <span className="block px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-80 bg-[#D9D9D9]/10 border-2 border-[#515151] text-[#D9D9D9] cursor-pointer">
+                  Sign up
+                </span>
+              </Link>
+            </>
+          )}
         </div>
       </NavBody>
 
@@ -137,22 +154,40 @@ export default function CustomNavbar() {
             </a>
           ))}
           <div className="flex w-full flex-col gap-4">
-            <Link href="/login" className="w-full cursor-pointer">
-              <button 
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-80 text-[#D9D9D9] hover:text-white w-full justify-center cursor-pointer"
-              >
-                Login
-              </button>
-            </Link>
-            <Link href="/signup" className="w-full cursor-pointer">
-              <button 
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-80 bg-[#D9D9D9]/10 border-2 border-[#515151] text-[#D9D9D9] w-full justify-center cursor-pointer"
-              >
-                Sign up
-              </button>
-            </Link>
+            {user ? (
+              <>
+                <span className="px-4 py-2 rounded-xl text-sm font-medium text-[#D9D9D9] w-full text-left">
+                  Welcome, {user.displayName || user.email}
+                </span>
+                <Link href="/dashboard" className="w-full cursor-pointer">
+                  <button 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-80 bg-[#D9D9D9]/10 border-2 border-[#515151] text-[#D9D9D9] w-full justify-center cursor-pointer"
+                  >
+                    Dashboard
+                  </button>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="/login" className="w-full cursor-pointer">
+                  <button 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-80 text-[#D9D9D9] hover:text-white w-full justify-center cursor-pointer"
+                  >
+                    Login
+                  </button>
+                </Link>
+                <Link href="/signup" className="w-full cursor-pointer">
+                  <button 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-80 bg-[#D9D9D9]/10 border-2 border-[#515151] text-[#D9D9D9] w-full justify-center cursor-pointer"
+                  >
+                    Sign up
+                  </button>
+                </Link>
+              </>
+            )}
           </div>
         </MobileNavMenu>
       </MobileNav>
