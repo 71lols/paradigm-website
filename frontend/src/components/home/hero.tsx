@@ -1,7 +1,23 @@
+'use client';
 import Image from "next/image";
 import GradientContainer from "@/components/UI/gradientContainer";
+import { useCallback } from "react";
 
 export default function Hero() {
+  // Smooth scroll to CTA section
+  const handleDownloadClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const targetElement = document.getElementById("contact");
+    if (targetElement) {
+      const navbarOffset = 100;
+      const elementPosition = targetElement.offsetTop - navbarOffset;
+      window.scrollTo({
+        top: elementPosition,
+        behavior: "smooth"
+      });
+    }
+  }, []);
+
   return (
     <GradientContainer
       ellipses={[
@@ -67,7 +83,10 @@ export default function Hero() {
       />
 
       <div className="flex flex-col justify-center items-center min-w-full min-h-full space-y-4 px-4 sm:px-6 md:px-8">
-        <div className="h-8 w-fit px-4 sm:px-6 flex justify-center items-center gap-2 border-2 border-[#515151] bg-[#D9D9D9]/10 rounded-2xl">
+        <div
+          className="h-8 w-fit px-4 sm:px-6 flex justify-center items-center gap-2 border-2 border-[#515151] bg-[#D9D9D9]/10 rounded-2xl cursor-pointer"
+          onClick={handleDownloadClick}
+        >
           <h3 className="text-[#D9D9D9] text-sm sm:text-md text-center font-medium">Download Now</h3>
           <Image
             src="/home/HyperlinkArrow.svg"
