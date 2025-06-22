@@ -202,4 +202,4 @@ This project is licensed under the ISC License.
 
 ## 🆘 Support
 
-For support, email support@paradigm.ai or create an issue in the repository.
+For support, feel free to email or create an issue in the repository.
