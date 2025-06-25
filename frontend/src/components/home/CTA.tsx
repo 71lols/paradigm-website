@@ -65,7 +65,6 @@ export default function CTASection() {
             Download for Windows
           </Button>
           <a 
-            href="https://paradigm-backend.vercel.app/api/download/installer" 
             className="text-[#888888] text-xs hover:text-[#B9FFC3] transition-colors cursor-pointer"
           >
             Download for Mac (unavailable at the moment)
