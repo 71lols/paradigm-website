@@ -14,7 +14,7 @@ A modern AI assistant platform that provides personal AI assistance with screen 
 
 ### Frontend
 - **Framework**: Next.js 15 with App Router
-- **Language**: TypeScript
+- **Language**: TypeScrip
 - **Styling**: Tailwind CSS v4
 - **Authentication**: Firebase Auth
 - **Icons**: Lucide React, Tabler Icons

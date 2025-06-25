@@ -33,7 +33,7 @@ const CustomNavbarLogo = () => {
 };
 
 export default function CustomNavbar() {
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
   const navItems = [
     {
       name: "How it works",

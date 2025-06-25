@@ -10,6 +10,8 @@ interface PricingCardProps {
   buttonSecondary?: string;
   features: string[];
   ellipseColor: string;
+  downloadUrl?: string;
+  buttonAction?: () => void;
 }
 
 interface WhiteButtonProps {
@@ -19,12 +21,15 @@ interface WhiteButtonProps {
   onClick?: () => void;
   disabled?: boolean;
   type?: "button" | "submit" | "reset";
+  downloadUrl?: string;
 }
 
 const WhiteButton = ({ 
   children, 
   className = "", 
   variant = "primary",
+  downloadUrl,
+  onClick,
   ...props 
 }: WhiteButtonProps) => {
   const baseStyles = "px-6 py-3 rounded-lg font-medium transition-all duration-200 text-center";
@@ -34,9 +39,26 @@ const WhiteButton = ({
     secondary: "bg-transparent text-white border border-white/30 hover:bg-white/10"
   };
 
+  const handleClick = () => {
+    if (downloadUrl) {
+      // Create download link
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = '';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+    
+    if (onClick) {
+      onClick();
+    }
+  };
+
   return (
     <button 
       className={`${baseStyles} ${variants[variant]} ${className}`}
+      onClick={handleClick}
       {...props}
     >
       {children}
@@ -52,7 +74,9 @@ const PricingCard = ({
   buttonText,
   buttonSecondary,
   features,
-  ellipseColor
+  ellipseColor,
+  downloadUrl,
+  buttonAction
 }: PricingCardProps) => {
   const ellipses = [
     {
@@ -95,13 +119,21 @@ const PricingCard = ({
 
         {/* Button and Secondary Text */}
         <div className="h-20 flex flex-col justify-start">
-          <WhiteButton variant="primary" className="w-full mb-2">
+          <WhiteButton 
+            variant="primary" 
+            className="w-full mb-2"
+            downloadUrl={downloadUrl}
+            onClick={buttonAction}
+          >
             {buttonText}
           </WhiteButton>
           {buttonSecondary && (
-            <p className="text-white/70 text-sm text-center">
+            <a 
+              href={downloadUrl}
+              className="text-white/70 text-sm text-center hover:text-white transition-colors cursor-pointer"
+            >
               {buttonSecondary}
-            </p>
+            </a>
           )}
         </div>
 
@@ -130,6 +162,8 @@ const PricingCard = ({
 };
 
 export default function PricingHero() {
+  const downloadUrl = "https://paradigm-backend.vercel.app/api/download/installer";
+
   const pricingPlans = [
     {
       title: "Free",
@@ -146,7 +180,8 @@ export default function PricingHero() {
         "Community Support",
         "Full Customizability"
       ],
-      ellipseColor: "#D9D9D9"
+      ellipseColor: "#D9D9D9",
+      downloadUrl: downloadUrl
     },
     {
       title: "Pro",
@@ -161,7 +196,11 @@ export default function PricingHero() {
         "Email Support",
         "Everything in Free"
       ],
-      ellipseColor: "#B9FFC3"
+      ellipseColor: "#B9FFC3",
+      buttonAction: () => {
+        // Handle Pro upgrade - maybe redirect to payment page
+        console.log("Upgrade to Pro clicked");
+      }
     },
     {
       title: "Enterprise",
@@ -178,7 +217,11 @@ export default function PricingHero() {
         "Admin dashboard and analytics",
         "Everything in Pro"
       ],
-      ellipseColor: "#B9CDFF"
+      ellipseColor: "#B9CDFF",
+      buttonAction: () => {
+        // Handle contact sales - maybe open email or contact form
+        console.log("Contact Sales clicked");
+      }
     }
   ];
 
@@ -210,6 +253,8 @@ export default function PricingHero() {
               buttonSecondary={plan.buttonSecondary}
               features={plan.features}
               ellipseColor={plan.ellipseColor}
+              downloadUrl={plan.downloadUrl}
+              buttonAction={plan.buttonAction}
             />
           ))}
         </div>

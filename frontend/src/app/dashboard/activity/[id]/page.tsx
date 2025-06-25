@@ -1,6 +1,6 @@
 // app/dashboard/activity/[id]/page.tsx
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/components/auth/authContext';
 import { activityService, ActivitySession } from '@/lib/activityService';
@@ -38,13 +38,9 @@ export default function ActivityDetailPage() {
 
   const activityId = params.id as string;
 
-  useEffect(() => {
-    if (user && activityId) {
-      loadActivity();
-    }
-  }, [user, activityId]);
-
-  const loadActivity = async () => {
+  const loadActivity = useCallback(async () => {
+    if (!user || !activityId) return;
+    
     try {
       setLoading(true);
       setError(null);
@@ -62,7 +58,11 @@ export default function ActivityDetailPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, activityId]);
+
+  useEffect(() => {
+    loadActivity();
+  }, [loadActivity]);
 
   const handleToggleStar = async () => {
     if (!activity) return;

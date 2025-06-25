@@ -10,6 +10,7 @@ import 'express-async-errors';
 import authRoutes from './routes/authRoutes';
 import contextRoutes from './routes/contextRoutes';
 import activityRoutes from './routes/activityRoutes';
+import downloadRoutes from './routes/downloadRoutes';
 
 // Import utilities
 import { AppError } from './utils/AppError';
@@ -91,6 +92,7 @@ app.get('/health', (req: Request, res: Response) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/contexts', contextRoutes);
 app.use('/api/activities', activityRoutes);
+app.use('/api/download', downloadRoutes);
 
 // Handle 404 routes
 app.all('*', (req: Request, res: Response, next: NextFunction) => {

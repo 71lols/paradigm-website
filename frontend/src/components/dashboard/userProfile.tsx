@@ -2,7 +2,7 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/components/auth/authContext';
-import { LogOut, Settings, User } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 interface UserProfileProps {

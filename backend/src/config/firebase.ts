@@ -42,6 +42,8 @@ class FirebaseAdmin {
         this.admin = admin.initializeApp({
           credential: admin.credential.cert(config),
           projectId: config.projectId,
+          // Add storage bucket
+          storageBucket: `${config.projectId}.appspot.com`
         });
         
         console.log('✅ Firebase Admin initialized successfully');

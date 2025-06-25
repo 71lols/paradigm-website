@@ -57,10 +57,19 @@ export default function CTASection() {
         </h1>
         
         <div className="flex flex-col items-center space-y-2">
-          <Button variant="secondary" size="lg">
+          <Button 
+            variant="secondary" 
+            size="lg"
+            downloadUrl="https://paradigm-backend.vercel.app/api/download/installer"
+          >
             Download for Windows
           </Button>
-          <p className="text-[#888888] text-xs">Download for Mac</p>
+          <a 
+            href="https://paradigm-backend.vercel.app/api/download/installer" 
+            className="text-[#888888] text-xs hover:text-[#B9FFC3] transition-colors cursor-pointer"
+          >
+            Download for Mac (unavailable at the moment)
+          </a>
         </div>
       </div>
     </GradientContainer>
