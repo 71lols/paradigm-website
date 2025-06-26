@@ -1,3 +1,4 @@
+// resizable-navbar.tsx - Complete implementation
 "use client";
 import { cn } from "@/lib/utils";
 import { IconMenu2, IconX } from "@tabler/icons-react";
@@ -11,14 +12,13 @@ import Image from "next/image";
 
 import React, { useRef, useState } from "react";
 
-
 interface NavbarProps {
   children: React.ReactNode;
   className?: string;
 }
 
 interface NavBodyProps {
-  children: React.ReactNode;
+  children: ((props: { visible: boolean }) => React.ReactNode) | React.ReactNode;
   className?: string;
   visible?: boolean;
 }
@@ -33,7 +33,7 @@ interface NavItemsProps {
 }
 
 interface MobileNavProps {
-  children: React.ReactNode;
+  children: ((props: { visible: boolean }) => React.ReactNode) | React.ReactNode;
   className?: string;
   visible?: boolean;
 }
@@ -69,8 +69,7 @@ export const Navbar = ({ children, className }: NavbarProps) => {
   return (
     <motion.div
       ref={ref}
-      // IMPORTANT: Change this to class of `fixed` if you want the navbar to be fixed
-      className={cn("sticky inset-x-0 top-20 z-40 w-full", className)}
+      className={cn("fixed inset-x-0 top-4 z-50 w-full", className)}
     >
       {React.Children.map(children, (child) =>
         React.isValidElement(child)
@@ -111,7 +110,7 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => {
         className,
       )}
     >
-      {children}
+      {typeof children === 'function' ? children({ visible: visible || false }) : children}
     </motion.div>
   );
 };
@@ -173,7 +172,7 @@ export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
         className,
       )}
     >
-      {children}
+      {typeof children === 'function' ? children({ visible: visible || false }) : children}
     </motion.div>
   );
 };
