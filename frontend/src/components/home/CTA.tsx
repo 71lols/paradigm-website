@@ -59,19 +59,21 @@ export default function CTASection() {
           >
             Download for Windows
           </Button>
-          <div className="flex items-center space-x-4 text-[#888888] text-xs">
+          <div className="flex items-center text-[#888888] text-xs">
+            
+            Download for
             <a 
               href={downloadUrls.macIntel}
-              className="hover:text-[#B9FFC3] transition-colors cursor-pointer"
+              className="hover:text-[#B9FFC3] transition-colors cursor-pointer ml-1"
             >
-              Download for Mac Intel
+              Mac Intel
             </a>
-            <span className="text-[#666666]">•</span>
+            <span className="px-1"> or </span>
             <a 
               href={downloadUrls.macSilicon}
               className="hover:text-[#B9FFC3] transition-colors cursor-pointer"
             >
-              Download for Mac Apple Silicon
+              Apple Silicon
             </a>
           </div>
         </div>
