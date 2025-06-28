@@ -31,6 +31,7 @@ export default function CTASection() {
     if (deviceType === 'mac') {
       return (
         <div className="flex flex-col items-center space-y-2">
+          <p className="text-[#888888] text-sm font-medium">Download for</p>
           <Button 
             variant="secondary" 
             size="lg"

@@ -103,7 +103,7 @@ export default function Button({
         {/* Left half */}
         <div
           onClick={handleLeftClick}
-          className="flex-1 h-full flex items-center justify-center hover:bg-black/10 transition-colors cursor-pointer px-4"
+          className="flex-1 h-full flex items-center justify-center hover:bg-black/10 transition-colors cursor-pointer px-8"
         >
           <span className={`${textSize} font-medium`}>{leftText}</span>
         </div>
@@ -114,7 +114,7 @@ export default function Button({
         {/* Right half */}
         <div
           onClick={handleRightClick}
-          className="flex-1 h-full flex items-center justify-center hover:bg-black/10 transition-colors cursor-pointer px-4"
+          className="flex-1 h-full flex items-center justify-center hover:bg-black/10 transition-colors cursor-pointer px-8"
         >
           <span className={`${textSize} font-medium`}>{rightText}</span>
         </div>
