@@ -173,7 +173,7 @@ export default function CustomNavbar() {
 
       {/* Mobile Navigation */}
       <MobileNav className="bg-[#191919]/80 backdrop-blur-md mx-auto [&.bg-white\/80]:!border [&.bg-white\/80]:!border-[#333333] dark:[&.bg-neutral-950\/80]:!border dark:[&.bg-neutral-950\/80]:!border-[#333333]">
-        {({ visible }) => (
+        {() => (
           <>
             <MobileNavHeader>
               <CustomNavbarLogo />
