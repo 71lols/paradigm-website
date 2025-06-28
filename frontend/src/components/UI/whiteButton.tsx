@@ -2,14 +2,22 @@
 import Image from "next/image";
 
 interface ButtonProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   variant?: 'primary' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
   showArrow?: boolean;
   onClick?: () => void;
   className?: string;
-  downloadUrl?: string; // URL to the installer file
-  downloadFileName?: string; // Optional custom filename
+  downloadUrl?: string;
+  downloadFileName?: string;
+  // Split button props
+  isSplit?: boolean;
+  leftText?: string;
+  rightText?: string;
+  onLeftClick?: () => void;
+  onRightClick?: () => void;
+  leftDownloadUrl?: string;
+  rightDownloadUrl?: string;
 }
 
 export default function Button({
@@ -20,7 +28,14 @@ export default function Button({
   onClick,
   className = '',
   downloadUrl,
-  downloadFileName
+  downloadFileName,
+  isSplit = false,
+  leftText,
+  rightText,
+  onLeftClick,
+  onRightClick,
+  leftDownloadUrl,
+  rightDownloadUrl
 }: ButtonProps) {
   const baseStyles = "flex justify-center items-center gap-2 border-2 rounded-2xl font-medium transition-all duration-200 hover:opacity-80";
   
@@ -35,49 +50,87 @@ export default function Button({
     lg: "h-12 px-8 text-base"
   };
 
-  const handleDownload = async () => {
-    if (downloadUrl) {
+  const handleDownload = async (url?: string, filename?: string) => {
+    if (url) {
       try {
-        // Method 1: Direct download for files hosted on your server
         const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.download = downloadFileName || 'installer';
+        link.href = url;
+        link.download = filename || 'installer';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        
-        // Alternative Method 2: For external files or when you need more control
-        // const response = await fetch(downloadUrl);
-        // const blob = await response.blob();
-        // const url = window.URL.createObjectURL(blob);
-        // const link = document.createElement('a');
-        // link.href = url;
-        // link.download = downloadFileName || 'installer';
-        // document.body.appendChild(link);
-        // link.click();
-        // document.body.removeChild(link);
-        // window.URL.revokeObjectURL(url);
       } catch (error) {
         console.error('Download failed:', error);
-        // You might want to show a toast notification here
       }
     }
-    
-    // Call the original onClick if provided
+  };
+
+  const handleRegularClick = async () => {
+    if (downloadUrl) {
+      await handleDownload(downloadUrl, downloadFileName);
+    }
     if (onClick) {
       onClick();
     }
   };
 
+  const handleLeftClick = async () => {
+    if (leftDownloadUrl) {
+      await handleDownload(leftDownloadUrl);
+    }
+    if (onLeftClick) {
+      onLeftClick();
+    }
+  };
+
+  const handleRightClick = async () => {
+    if (rightDownloadUrl) {
+      await handleDownload(rightDownloadUrl);
+    }
+    if (onRightClick) {
+      onRightClick();
+    }
+  };
+
+  if (isSplit) {
+    const baseClasses = `border-2 rounded-2xl ${variant === 'secondary' ? 'border-[#D9D9D9] bg-white text-[#191919]' : 'border-[#515151] bg-[#D9D9D9]/10 text-[#D9D9D9]'}`;
+    const heightClass = size === 'lg' ? 'h-12' : size === 'md' ? 'h-8' : 'h-6';
+    const textSize = size === 'lg' ? 'text-base' : size === 'md' ? 'text-sm' : 'text-xs';
+    const totalWidth = size === 'lg' ? 'min-w-48' : size === 'md' ? 'min-w-40' : 'min-w-32';
+    
+    return (
+      <div className={`flex ${baseClasses} ${heightClass} ${totalWidth} font-medium overflow-hidden ${className}`}>
+        {/* Left half */}
+        <div
+          onClick={handleLeftClick}
+          className="flex-1 h-full flex items-center justify-center hover:bg-black/10 transition-colors cursor-pointer px-4"
+        >
+          <span className={`${textSize} font-medium`}>{leftText}</span>
+        </div>
+        
+        {/* Divider */}
+        <div className="w-px h-full bg-current opacity-30 flex-shrink-0"></div>
+        
+        {/* Right half */}
+        <div
+          onClick={handleRightClick}
+          className="flex-1 h-full flex items-center justify-center hover:bg-black/10 transition-colors cursor-pointer px-4"
+        >
+          <span className={`${textSize} font-medium`}>{rightText}</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <button
       className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
-      onClick={handleDownload}
+      onClick={handleRegularClick}
     >
       {children}
       {showArrow && (
         <Image
-          src="/arrow-icon.svg" // Make sure you have this icon
+          src="/arrow-icon.svg"
           alt="Arrow"
           width={16}
           height={16}

@@ -1,7 +1,84 @@
+"use client"
+import { useState, useEffect } from "react";
 import GradientContainer from "@/components/UI/gradientContainer";
 import Button from "@/components/UI/whiteButton";
 
+type DeviceType = 'windows' | 'mac' | 'unknown';
+
 export default function CTASection() {
+  const [deviceType, setDeviceType] = useState<DeviceType>('unknown');
+
+  useEffect(() => {
+    // Detect user's operating system
+    const userAgent = navigator.userAgent.toLowerCase();
+    
+    if (userAgent.includes('mac os x') || userAgent.includes('macintosh')) {
+      setDeviceType('mac');
+    } else if (userAgent.includes('windows')) {
+      setDeviceType('windows');
+    } else {
+      setDeviceType('windows'); // Default to Windows
+    }
+  }, []);
+
+  const downloadUrls = {
+    windows: 'https://paradigm-backend.vercel.app/api/download/installer',
+    macIntel: 'https://paradigm-backend.vercel.app/api/download/installer/mac',
+    macSilicon: 'https://paradigm-backend.vercel.app/api/download/installer/mac-silicon'
+  };
+
+  const renderDownloadSection = () => {
+    if (deviceType === 'mac') {
+      return (
+        <div className="flex flex-col items-center space-y-2">
+          <Button 
+            variant="secondary" 
+            size="lg"
+            isSplit={true}
+            leftText="Intel"
+            rightText="Apple"
+            leftDownloadUrl={downloadUrls.macIntel}
+            rightDownloadUrl={downloadUrls.macSilicon}
+          />
+          <a 
+            href={downloadUrls.windows}
+            className="text-[#888888] text-xs hover:text-[#B9FFC3] transition-colors cursor-pointer"
+          >
+            Download for Windows
+          </a>
+        </div>
+      );
+    } else {
+      // Windows or unknown device
+      return (
+        <div className="flex flex-col items-center space-y-2">
+          <Button 
+            variant="secondary" 
+            size="lg"
+            downloadUrl={downloadUrls.windows}
+          >
+            Download for Windows
+          </Button>
+          <div className="flex items-center space-x-4 text-[#888888] text-xs">
+            <a 
+              href={downloadUrls.macIntel}
+              className="hover:text-[#B9FFC3] transition-colors cursor-pointer"
+            >
+              Download for Mac Intel
+            </a>
+            <span className="text-[#666666]">•</span>
+            <a 
+              href={downloadUrls.macSilicon}
+              className="hover:text-[#B9FFC3] transition-colors cursor-pointer"
+            >
+              Download for Mac Apple Silicon
+            </a>
+          </div>
+        </div>
+      );
+    }
+  };
+
   return (
     <GradientContainer
       ellipses={[
@@ -56,20 +133,7 @@ export default function CTASection() {
           The Paradigm Shift
         </h1>
         
-        <div className="flex flex-col items-center space-y-2">
-          <Button 
-            variant="secondary" 
-            size="lg"
-            downloadUrl="https://paradigm-backend.vercel.app/api/download/installer"
-          >
-            Download for Windows
-          </Button>
-          <a 
-            className="text-[#888888] text-xs hover:text-[#B9FFC3] transition-colors cursor-pointer"
-          >
-            Download for Mac (unavailable at the moment)
-          </a>
-        </div>
+        {renderDownloadSection()}
       </div>
     </GradientContainer>
   );
