@@ -19,7 +19,7 @@ import { motion, AnimatePresence } from "motion/react";
 const CustomNavbarLogo = () => {
   return (
     <a
-      href="#"
+      href="/"
       className="relative z-20 mr-4 flex items-center justify-center space-x-2 px-2 pb-1 text-sm font-normal"
     >
       <Image
@@ -39,11 +39,11 @@ export default function CustomNavbar() {
   const navItems = [
     {
       name: "How it works",
-      link: "#how-it-works",
+      link: "/#how-it-works",
     },
     {
       name: "Features",
-      link: "#features",
+      link: "/#features",
     },
     {
       name: "Pricing",
@@ -51,11 +51,11 @@ export default function CustomNavbar() {
     },
     {
       name: "Help",
-      link: "#help",
+      link: "/#help",
     },
     {
       name: "Contact Us",
-      link: "#contact",
+      link: "/#contact",
     },
   ];
 
