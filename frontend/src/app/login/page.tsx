@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import GradientContainer from "@/components/UI/gradientContainer";
 import Link from "next/link";
 import Image from "next/image";
@@ -46,9 +46,70 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isElectronAuth, setIsElectronAuth] = useState(false);
+  const [electronRedirecting, setElectronRedirecting] = useState(false);
 
-  const { signIn, signInWithGoogle, signInWithGithub } = useAuth();
+  const { signIn, signInWithGoogle, signInWithGithub, user } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Check if this is an Electron auth request
+  useEffect(() => {
+    const source = searchParams.get('source');
+    if (source === 'electron') {
+      setIsElectronAuth(true);
+    }
+  }, [searchParams]);
+
+  // Handle authentication success - redirect based on context
+  // useEffect(() => {
+  //   if (user && !loading) {
+  //     handleAuthSuccess(user);
+  //   }
+  // }, [user, loading]);
+
+  const handleAuthSuccess = async (authenticatedUser: any) => {
+    console.log('handleAuthSuccess called with user:', authenticatedUser.email);
+    
+    if (isElectronAuth) {
+      console.log('This is an Electron auth request');
+      setElectronRedirecting(true);
+      
+      try {
+        console.log('Getting ID token...');
+        const token = await authenticatedUser.getIdToken();
+        console.log('Got ID token, length:', token.length);
+        
+        // Prepare user data for Electron
+        const userData = {
+          uid: authenticatedUser.uid,
+          email: authenticatedUser.email,
+          displayName: authenticatedUser.displayName,
+          photoURL: authenticatedUser.photoURL,
+        };
+        console.log('Prepared user data:', userData);
+  
+        // Redirect to custom protocol
+        const protocolUrl = `paradigm://auth-success?token=${encodeURIComponent(token)}&user=${encodeURIComponent(JSON.stringify(userData))}`;
+        
+        console.log('About to redirect to:', protocolUrl.substring(0, 50) + '...');
+        console.log('Redirecting to Electron app...');
+        
+        window.location.href = protocolUrl;
+        
+        console.log('Redirect command sent');
+        
+      } catch (error) {
+        console.error('Error in handleAuthSuccess:', error);
+        const errorUrl = `paradigm://auth-error?error=${encodeURIComponent('Failed to get authentication token')}`;
+        window.location.href = errorUrl;
+        setElectronRedirecting(false);
+      }
+    } else {
+      console.log('Normal web flow, redirecting to dashboard');
+      router.push("/dashboard");
+    }
+  };
 
   const ellipses = [
     {
@@ -78,18 +139,19 @@ export default function LoginPage() {
       const result = await signInWithGoogle();
       if (result.error) {
         setError(result.error);
-      } else {
-        // Redirect to dashboard
-        router.push("/dashboard");
+        setLoading(false);
+      } else if (result.user) {
+        // Directly call handleAuthSuccess
+        console.log('Google login successful, calling handleAuthSuccess');
+        await handleAuthSuccess(result.user);
       }
     } catch (err) {
       const error = err as AuthError;
       setError(error.message || "An error occurred during Google sign in");
-    } finally {
       setLoading(false);
     }
   };
-
+  
   const handleGithubLogin = async () => {
     setLoading(true);
     setError("");
@@ -98,38 +160,89 @@ export default function LoginPage() {
       const result = await signInWithGithub();
       if (result.error) {
         setError(result.error);
-      } else {
-        // Redirect to dashboard
-        router.push("/dashboard");
+        setLoading(false);
+      } else if (result.user) {
+        // Directly call handleAuthSuccess
+        console.log('GitHub login successful, calling handleAuthSuccess');
+        await handleAuthSuccess(result.user);
       }
     } catch (err) {
       const error = err as AuthError;
       setError(error.message || "An error occurred during GitHub sign in");
-    } finally {
       setLoading(false);
     }
   };
-
+  
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-
+  
     try {
       const result = await signIn(email, password);
       if (result.error) {
         setError(result.error);
-      } else {
-        // Success! Redirect to dashboard
-        router.push("/dashboard");
+        setLoading(false);
+      } else if (result.user) {
+        // Directly call handleAuthSuccess
+        console.log('Email login successful, calling handleAuthSuccess');
+        await handleAuthSuccess(result.user);
       }
     } catch (err) {
       const error = err as AuthError;
       setError(error.message || "An error occurred during sign in");
-    } finally {
       setLoading(false);
     }
   };
+  
+  // Show success screen for Electron users
+  if (isElectronAuth && electronRedirecting) {
+    return (
+      <div className="min-h-screen bg-[#191919] flex items-center justify-center p-4">
+        {/* Logo */}
+        <div className="absolute top-8 left-8">
+          <Link href="/">
+            <Image
+              src="/Logo.png"
+              alt="Paradigm Logo"
+              width={150}
+              height={125}
+              className="object-contain border-white"
+              priority
+            />
+          </Link>
+        </div>
+
+        {/* Success Container */}
+        <div className="w-full max-w-lg">
+          <GradientContainer 
+            ellipses={ellipses}
+            className="p-8"
+            containerHeight="h-auto"
+            rounded="rounded-2xl"
+          >
+            <div className="space-y-6 text-center">
+              <div className="w-16 h-16 mx-auto bg-green-500/20 rounded-full flex items-center justify-center">
+                <svg className="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              
+              <div>
+                <h1 className="text-2xl font-medium text-white mb-2">Authentication Successful!</h1>
+                <p className="text-white/70">You can now return to the Paradigm app.</p>
+              </div>
+
+              <div className="flex items-center justify-center gap-2 text-white/60">
+                <div className="w-2 h-2 bg-white/60 rounded-full animate-pulse"></div>
+                <span className="text-sm">Redirecting to app...</span>
+              </div>
+            </div>
+          </GradientContainer>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#191919] flex items-center justify-center p-4">
@@ -158,13 +271,22 @@ export default function LoginPage() {
           <div className="space-y-6">
             {/* Header */}
             <div className="text-left">
-              <h1 className="text-2xl font-md text-white mb-6">Welcome to Paradigm</h1>
+              <h1 className="text-2xl font-md text-white mb-2">
+                {isElectronAuth ? "Sign in to Paradigm App" : "Welcome to Paradigm"}
+              </h1>
+              {isElectronAuth && (
+                <p className="text-white/70 text-sm">
+                  Sign in to access the Paradigm desktop application
+                </p>
+              )}
             </div>
 
-            {/* Success Message */}
-            {!error && loading && (
+            {/* Loading Message */}
+            {loading && (
               <div className="bg-blue-500/20 border border-blue-500/50 rounded-lg p-3">
-                <p className="text-blue-400 text-sm">Signing you in...</p>
+                <p className="text-blue-400 text-sm">
+                  {isElectronAuth ? "Authenticating for desktop app..." : "Signing you in..."}
+                </p>
               </div>
             )}
 
@@ -275,12 +397,14 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              {/* Forgot Password */}
-              <div className="flex justify-end">
-                <Link href="/forgot-password" className="text-sm text-white/70 hover:text-white underline">
-                  Forgot Password?
-                </Link>
-              </div>
+              {/* Forgot Password - Hide for Electron users */}
+              {!isElectronAuth && (
+                <div className="flex justify-end">
+                  <Link href="/forgot-password" className="text-sm text-white/70 hover:text-white underline">
+                    Forgot Password?
+                  </Link>
+                </div>
+              )}
 
               {/* Login Button */}
               <button
@@ -291,20 +415,22 @@ export default function LoginPage() {
                 {loading ? (
                   <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
                 ) : (
-                  "Login"
+                  isElectronAuth ? "Sign in to App" : "Login"
                 )}
               </button>
             </form>
 
-            {/* Sign Up Link */}
-            <div className="text-center">
-              <span className="text-white/70 text-sm">
-                Don&apos;t have an account?{" "}
-                <Link href="/signup" className="text-white font-medium hover:text-white/80">
-                  Sign up
-                </Link>
-              </span>
-            </div>
+            {/* Sign Up Link - Hide for Electron users */}
+            {!isElectronAuth && (
+              <div className="text-center">
+                <span className="text-white/70 text-sm">
+                  Don&apos;t have an account?{" "}
+                  <Link href="/signup" className="text-white font-medium hover:text-white/80">
+                    Sign up
+                  </Link>
+                </span>
+              </div>
+            )}
           </div>
         </GradientContainer>
       </div>
