@@ -156,19 +156,6 @@ export default function ActivityDetailPage() {
     }
   };
 
-  const getStatusColor = (status: ActivitySession['status']) => {
-    switch (status) {
-      case 'completed':
-        return 'text-green-400 bg-green-500/10 border-green-500/20';
-      case 'processing':
-        return 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20';
-      case 'failed':
-        return 'text-red-400 bg-red-500/10 border-red-500/20';
-      default:
-        return 'text-gray-400 bg-gray-500/10 border-gray-500/20';
-    }
-  };
-
   const formatTimestamp = (timestamp: string) => {
     const date = new Date(timestamp);
     return date.toLocaleDateString('en-US', {
@@ -287,22 +274,13 @@ export default function ActivityDetailPage() {
         {/* Meta Information */}
         <div className="bg-white/5 border border-white/10 rounded-lg p-6 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="flex items-center gap-2 text-white/70">
+            {/* <div className="flex items-center gap-2 text-white/70">
               <Clock className="w-4 h-4" />
               <span className="text-sm">Duration: {activity.duration}</span>
-            </div>
-            <div className="flex items-center gap-2 text-white/70">
-              <Users className="w-4 h-4" />
-              <span className="text-sm">{activity.participants} participant{activity.participants > 1 ? 's' : ''}</span>
-            </div>
+            </div> */}
             <div className="flex items-center gap-2 text-white/70">
               <Calendar className="w-4 h-4" />
               <span className="text-sm">{formatTimestamp(activity.timestamp)}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className={`px-3 py-1 text-xs rounded-full font-medium border ${getStatusColor(activity.status)}`}>
-                {activity.status}
-              </span>
             </div>
           </div>
           

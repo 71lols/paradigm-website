@@ -81,19 +81,6 @@ export default function Activity() {
     }
   };
 
-  const getStatusColor = (status: ActivitySession['status']) => {
-    switch (status) {
-      case 'completed':
-        return 'text-green-400 bg-green-500/10';
-      case 'processing':
-        return 'text-yellow-400 bg-yellow-500/10';
-      case 'failed':
-        return 'text-red-400 bg-red-500/10';
-      default:
-        return 'text-gray-400 bg-gray-500/10';
-    }
-  };
-
   const handleViewDetails = (sessionId: string) => {
     router.push(`/dashboard/activity/${sessionId}`);
   };
@@ -122,13 +109,13 @@ export default function Activity() {
       const response = await activityService.deleteActivity(sessionId);
       if (response.success) {
         setSessions(sessions.filter(session => session.id !== sessionId));
-        alert('✅ Activity deleted successfully!');
+        // No alert for success
       } else {
-        alert(`❌ Failed to delete activity: ${response.error}`);
+        setError(`❌ Failed to delete activity: ${response.error}`);
       }
     } catch (err) {
       console.error('Error deleting activity:', err);
-      alert(`❌ Error deleting activity: ${err}`);
+      setError(`❌ Error deleting activity: ${err}`);
     }
   };
 
@@ -223,14 +210,10 @@ export default function Activity() {
                   
                   {/* Meta Information */}
                   <div className="flex items-center gap-4 text-white/50 text-sm mb-3">
-                    <div className="flex items-center gap-1">
+                    {/* <div className="flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       <span>{session.duration}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Users className="w-3 h-3" />
-                      <span>{session.participants} participant{session.participants > 1 ? 's' : ''}</span>
-                    </div>
+                    </div> */}
                     <div className="flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
                       <span>{formatTimestamp(session.timestamp)}</span>
@@ -255,11 +238,6 @@ export default function Activity() {
               
               {/* Right Content */}
               <div className="flex items-center gap-2 ml-4">
-                {/* Status Badge */}
-                <span className={`px-2 py-1 text-xs rounded-full font-medium ${getStatusColor(session.status)}`}>
-                  {session.status}
-                </span>
-                
                 {/* Actions */}
                 <div className="flex items-center gap-1">
                   <button
