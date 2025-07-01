@@ -30,7 +30,7 @@ export default function CTASection() {
   const renderDownloadSection = () => {
     if (deviceType === 'mac') {
       return (
-        <div className="flex flex-col items-center space-y-2">
+        <div className="flex flex-col items-center space-y-4">
           <p className="text-[#888888] text-sm font-medium">Download for</p>
           <Button 
             variant="secondary" 
@@ -41,6 +41,24 @@ export default function CTASection() {
             leftDownloadUrl={downloadUrls.macIntel}
             rightDownloadUrl={downloadUrls.macSilicon}
           />
+          
+          {/* macOS Disclaimer */}
+          <div className="bg-[#2A2A2A] border border-[#3A3A3A] rounded-lg p-4 max-w-md mx-auto">
+            <div className="flex items-start space-x-2">
+              <div className="text-yellow-400 text-sm">⚠️</div>
+              <div>
+                <p className="text-[#D9D9D9] text-xs font-medium mb-1">macOS Security Notice</p>
+                <p className="text-[#888888] text-xs leading-relaxed mb-2">
+                  App is currently unsigned. After downloading, you may need to:
+                </p>
+                <ol className="text-[#888888] text-xs space-y-1 ml-3">
+                  <li>1. Right-click the app → "Open"</li>
+                  <li>2. Or run: <code className="bg-[#1A1A1A] px-1 rounded text-[#B9FFC3]">sudo xattr -d com.apple.quarantine /path/to/Paradigm.app</code></li>
+                </ol>
+              </div>
+            </div>
+          </div>
+          
           <a 
             href={downloadUrls.windows}
             className="text-[#888888] text-xs hover:text-[#B9FFC3] transition-colors cursor-pointer"
@@ -61,7 +79,6 @@ export default function CTASection() {
             Download for Windows
           </Button>
           <div className="flex items-center text-[#888888] text-xs">
-            
             Download for
             <a 
               href={downloadUrls.macIntel}
@@ -76,6 +93,13 @@ export default function CTASection() {
             >
               Apple Silicon
             </a>
+          </div>
+          
+          {/* macOS Disclaimer for non-Mac users */}
+          <div className="text-center mt-2">
+            <p className="text-[#666666] text-xs">
+              ⚠️ macOS apps are unsigned - may require manual security bypass
+            </p>
           </div>
         </div>
       );
