@@ -15,9 +15,9 @@ interface AuthError {
 // Define proper user type instead of using 'any'
 interface AuthUser {
   uid: string;
-  email: string;
-  displayName?: string;
-  photoURL?: string;
+  email: string | null;
+  displayName?: string | null;
+  photoURL?: string | null;
   getIdToken: () => Promise<string>;
 }
 
@@ -70,7 +70,7 @@ export default function LoginPage() {
     }
   }, [searchParams]);
 
-  const handleAuthSuccess = async (authenticatedUser: any) => {
+  const handleAuthSuccess = async (authenticatedUser: AuthUser) => {
     console.log('handleAuthSuccess called with user:', authenticatedUser.email);
     
     if (isElectronAuth) {
