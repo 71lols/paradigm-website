@@ -71,7 +71,7 @@ export default function Sidebar({ activeSection = 'context', onSectionChange }: 
   return (
     <div className={`${isCollapsed ? 'w-16' : 'w-64'} h-screen bg-[#191919] border-r border-white/10 flex flex-col transition-all duration-300 ease-in-out`}>
       {/* Logo / Collapse Button */}
-      <div className={`${isCollapsed ? 'p-3' : 'p-6'} border-b border-white/10 transition-all duration-300 flex items-center justify-center relative`}>
+      <div className={`${isCollapsed ? 'p-3' : 'p-6'} border-b border-white/10 transition-all duration-300 flex items-center justify-center relative mb-4`}>
         {isCollapsed ? (
           <button
             onClick={toggleSidebar}
@@ -112,31 +112,6 @@ export default function Sidebar({ activeSection = 'context', onSectionChange }: 
         )}
       </div>
 
-      {/* Search */}
-      <div className={`${isCollapsed ? 'p-2' : 'p-4'}`}>
-        <div className="relative">
-          {isCollapsed ? (
-            <button
-              onClick={handleSearchClick}
-              className="w-full bg-white/5 border border-white/20 rounded-lg py-3 text-white/50 hover:bg-white/10 hover:text-white transition-all duration-200 flex items-center justify-center"
-              title="Search"
-            >
-              <Search className="w-5 h-5" />
-            </button>
-          ) : (
-            <>
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/50 w-4 h-4" />
-              <input
-                type="text"
-                placeholder="Search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white/5 border border-white/20 rounded-lg pl-10 pr-4 py-2 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-transparent"
-              />
-            </>
-          )}
-        </div>
-      </div>
 
       {/* Navigation Menu */}
       <div className={`flex-1 ${isCollapsed ? 'px-2' : 'px-4'}`}>
@@ -169,7 +144,7 @@ export default function Sidebar({ activeSection = 'context', onSectionChange }: 
         {/* Download Paradigm */}
         <button 
           onClick={handleDownloadClick}
-          className={`w-full flex items-center ${isCollapsed ? 'justify-center px-0 py-3' : 'gap-3 px-3 py-2'} rounded-lg text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 transition-all duration-200 mb-4`}
+          className={`w-full flex items-center ${isCollapsed ? 'justify-center px-0 py-3' : 'gap-3 px-3 py-2'} rounded-lg text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 transition-all duration-200 mb-4  cursor-pointer`}
           title={isCollapsed ? 'Download Paradigm' : undefined}
         >
           <Download className="w-5 h-5" />

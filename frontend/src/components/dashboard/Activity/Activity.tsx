@@ -62,10 +62,10 @@ export default function Activity() {
     return (
       session.title.toLowerCase().includes(query) ||
       session.description.toLowerCase().includes(query) ||
-      session.tags.some(tag => tag.toLowerCase().includes(query))
+      (session.tags && session.tags.some(tag => tag.toLowerCase().includes(query)))
     );
   });
-
+  
   const getTypeIcon = (type: ActivitySession['type']) => {
     switch (type) {
       case 'meeting':
