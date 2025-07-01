@@ -52,11 +52,7 @@ export default function CustomNavbar() {
     {
       name: "Help",
       link: "/#help",
-    },
-    {
-      name: "Contact Us",
-      link: "/#contact",
-    },
+    }
   ];
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

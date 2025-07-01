@@ -7,7 +7,7 @@ export default function Hero() {
   // Smooth scroll to CTA section
   const handleDownloadClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    const targetElement = document.getElementById("contact");
+    const targetElement = document.getElementById("CTA");
     if (targetElement) {
       const navbarOffset = 100;
       const elementPosition = targetElement.offsetTop - navbarOffset;

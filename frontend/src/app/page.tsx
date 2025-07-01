@@ -17,7 +17,7 @@ export default function Home() {
         <div id="features" className="mb-12 sm:mb-16">
           <Features />
         </div>
-        <div id="contact" className="mb-12 sm:mb-16">
+        <div id="CTA" className="mb-12 sm:mb-16">
           <CTA />
         </div>
         <Footer />

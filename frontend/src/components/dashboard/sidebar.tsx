@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Search, Layers, Settings, Download, ChevronRight, FileText } from 'lucide-react';
 import UserProfile from './userProfile';
 import Image from "next/image";
+import { useRouter } from 'next/navigation';
 
 interface SidebarProps {
   activeSection?: string;
@@ -14,6 +15,7 @@ export default function Sidebar({ activeSection = 'context', onSectionChange }: 
   const [searchQuery, setSearchQuery] = useState('');
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isLogoHovered, setIsLogoHovered] = useState(false);
+  const router = useRouter();
 
   const menuItems = [
     {
@@ -45,6 +47,25 @@ export default function Sidebar({ activeSection = 'context', onSectionChange }: 
     if (isCollapsed) {
       setIsCollapsed(false);
     }
+  };
+
+  const handleDownloadClick = () => {
+    router.push('/');
+    // Scroll to CTA section after navigation with a longer delay
+    setTimeout(() => {
+      const ctaElement = document.getElementById('CTA');
+      if (ctaElement) {
+        ctaElement.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        // If element not found, try again after a bit more time
+        setTimeout(() => {
+          const ctaElement = document.getElementById('CTA');
+          if (ctaElement) {
+            ctaElement.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 500);
+      }
+    }, 300);
   };
 
   return (
@@ -147,6 +168,7 @@ export default function Sidebar({ activeSection = 'context', onSectionChange }: 
       <div className={`${isCollapsed ? 'p-2' : 'p-4'} border-t border-white/10`}>
         {/* Download Paradigm */}
         <button 
+          onClick={handleDownloadClick}
           className={`w-full flex items-center ${isCollapsed ? 'justify-center px-0 py-3' : 'gap-3 px-3 py-2'} rounded-lg text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 transition-all duration-200 mb-4`}
           title={isCollapsed ? 'Download Paradigm' : undefined}
         >
