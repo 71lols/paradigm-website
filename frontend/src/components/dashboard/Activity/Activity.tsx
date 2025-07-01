@@ -1,7 +1,10 @@
 // components/dashboard/Activity/Activity.tsx
 'use client';
 import { useState, useEffect } from 'react';
-import { Search, Users, Phone, FileText, Clock, Calendar, Star, Play, MoreHorizontal, X } from 'lucide-react';
+import { Search, 
+  Users, Phone, FileText, 
+  // Clock, 
+  Calendar, Star, Play, MoreHorizontal, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/auth/authContext';
 import { activityService, ActivitySession } from '@/lib/activityService';

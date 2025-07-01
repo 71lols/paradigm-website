@@ -1,7 +1,7 @@
 // components/dashboard/Sidebar.tsx
 'use client';
 import { useState } from 'react';
-import { Search, Layers, Settings, Download, ChevronRight, FileText } from 'lucide-react';
+import { Layers, Settings, Download, ChevronRight, FileText } from 'lucide-react';
 import UserProfile from './userProfile';
 import Image from "next/image";
 import { useRouter } from 'next/navigation';
@@ -12,7 +12,6 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ activeSection = 'context', onSectionChange }: SidebarProps) {
-  const [searchQuery, setSearchQuery] = useState('');
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isLogoHovered, setIsLogoHovered] = useState(false);
   const router = useRouter();
@@ -41,12 +40,6 @@ export default function Sidebar({ activeSection = 'context', onSectionChange }: 
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
-  };
-
-  const handleSearchClick = () => {
-    if (isCollapsed) {
-      setIsCollapsed(false);
-    }
   };
 
   const handleDownloadClick = () => {
