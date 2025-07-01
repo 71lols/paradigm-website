@@ -64,6 +64,12 @@ router.post(
   contextController.useContext
 );
 
+router.post(
+  '/:contextId/deactivate',
+  validateParams(contextParamSchemas.contextId),
+  contextController.deactivateContext
+);
+
 // Category routes
 router.get(
   '/categories/list',

@@ -177,21 +177,37 @@ export default function AIContexts() {
     }
   };
 
-  const handleUseContext = async (contextId: string) => {
+  const handleToggleContext = async (context: AIContext) => {
     try {
-      const updatedContext = await contextService.useContext(contextId);
+      let updatedContext: AIContext;
       
-      // Update the context list to reflect the active state change
-      setContexts(contexts.map(c => 
-        c.id === contextId 
-          ? updatedContext
-          : { ...c, isActive: false }
-      ));
-      
-      // Show success message or navigate to chat interface
-      alert(`Context "${updatedContext.title}" is now active!\n\nYou can now start chatting with this AI assistant context.`);
+      if (context.isActive) {
+        // If context is active, deactivate it
+        updatedContext = await contextService.deactivateContext(context.id);
+        
+        // Update the context list to reflect the deactivation
+        setContexts(contexts.map(c => 
+          c.id === context.id 
+            ? updatedContext
+            : c
+        ));
+        
+        alert(`Context "${updatedContext.title}" has been deactivated.`);
+      } else {
+        // If context is not active, activate it (existing logic)
+        updatedContext = await contextService.useContext(context.id);
+        
+        // Update the context list to reflect the active state change
+        setContexts(contexts.map(c => 
+          c.id === context.id 
+            ? updatedContext
+            : { ...c, isActive: false }
+        ));
+        
+        alert(`Context "${updatedContext.title}" is now active!\n\nYou can now start chatting with this AI assistant context.`);
+      }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to activate context');
+      setError(err instanceof Error ? err.message : 'Failed to toggle context');
     }
   };
 
@@ -344,13 +360,16 @@ export default function AIContexts() {
             </div>
 
             {/* Action Button */}
-            <button 
-              onClick={() => handleUseContext(context.id)}
-              disabled={context.isActive}
-              className="w-full bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <span>{context.isActive ? 'Currently Active' : 'Use Context'}</span>
-            </button>
+          <button 
+            onClick={() => handleToggleContext(context)}
+            className={`w-full py-2 rounded-lg transition-colors flex items-center justify-center gap-2 ${
+              context.isActive 
+                ? 'bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30' 
+                : 'bg-white/10 hover:bg-white/20 text-white'
+            }`}
+          >
+            <span>{context.isActive ? 'Deactivate Context' : 'Use Context'}</span>
+          </button>
           </div>
         ))}
       </div>

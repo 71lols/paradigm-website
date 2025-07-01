@@ -183,6 +183,15 @@ class ContextService {
     return this.handleResponse<AIContext>(response);
   }
 
+  async deactivateContext(contextId: string): Promise<AIContext> {
+    const response = await fetch(`${this.baseUrl}/api/contexts/${contextId}/deactivate`, {
+      method: 'POST',
+      headers: await this.getAuthHeaders(),
+    });
+
+    return this.handleResponse<AIContext>(response);
+  }
+
   // Category methods
   async getCategories(): Promise<ContextCategory[]> {
     const response = await fetch(`${this.baseUrl}/api/contexts/categories/list`, {

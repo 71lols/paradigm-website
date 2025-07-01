@@ -296,6 +296,59 @@ export const contextController = {
     return ResponseUtil.success(res, updatedContext, 'Context activated successfully');
   }),
 
+  // Deactivate the currently active context
+  deactivateContext: catchAsync(async (req: AuthenticatedRequest, res: Response) => {
+    if (!req.user) {
+      throw new AppError('User not authenticated', 401);
+    }
+
+    const { contextId } = req.params;
+
+    // Get existing context
+    const contextDoc = await firebaseAdmin.firestore
+      .collection('contexts')
+      .doc(contextId)
+      .get();
+
+    if (!contextDoc.exists) {
+      throw new AppError('Context not found', 404);
+    }
+
+    const contextData = contextDoc.data() as Omit<AIContext, 'id'>;
+    
+    // Check if user owns this context
+    if (contextData.userId !== req.user.uid) {
+      throw new AppError('Access denied', 403);
+    }
+
+    // Check if context is currently active
+    if (!contextData.isActive) {
+      throw new AppError('Context is not currently active', 400);
+    }
+
+    // Deactivate the context
+    await firebaseAdmin.firestore
+      .collection('contexts')
+      .doc(contextId)
+      .update({
+        isActive: false,
+        updatedAt: new Date().toISOString()
+      });
+
+    // Get updated context
+    const updatedDoc = await firebaseAdmin.firestore
+      .collection('contexts')
+      .doc(contextId)
+      .get();
+
+    const updatedContext: AIContext = {
+      id: updatedDoc.id,
+      ...updatedDoc.data()
+    } as AIContext;
+
+    return ResponseUtil.success(res, updatedContext, 'Context deactivated successfully');
+  }),
+
   // Get user's custom categories
   getCategories: catchAsync(async (req: AuthenticatedRequest, res: Response) => {
     if (!req.user) {
