@@ -12,6 +12,15 @@ interface AuthError {
   code?: string;
 }
 
+// Define proper user type instead of using 'any'
+interface AuthUser {
+  uid: string;
+  email: string;
+  displayName?: string;
+  photoURL?: string;
+  getIdToken: () => Promise<string>;
+}
+
 const GoogleIcon = () => (
   <svg className="w-4 h-4" viewBox="0 0 24 24">
     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -49,7 +58,7 @@ export default function LoginPage() {
   const [isElectronAuth, setIsElectronAuth] = useState(false);
   const [electronRedirecting, setElectronRedirecting] = useState(false);
 
-  const { signIn, signInWithGoogle, signInWithGithub, user } = useAuth();
+  const { signIn, signInWithGoogle, signInWithGithub } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -60,13 +69,6 @@ export default function LoginPage() {
       setIsElectronAuth(true);
     }
   }, [searchParams]);
-
-  // Handle authentication success - redirect based on context
-  // useEffect(() => {
-  //   if (user && !loading) {
-  //     handleAuthSuccess(user);
-  //   }
-  // }, [user, loading]);
 
   const handleAuthSuccess = async (authenticatedUser: any) => {
     console.log('handleAuthSuccess called with user:', authenticatedUser.email);

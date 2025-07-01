@@ -18,7 +18,7 @@ import { motion, AnimatePresence } from "motion/react";
 // Custom NavbarLogo to match your theme
 const CustomNavbarLogo = () => {
   return (
-    <a
+    <Link
       href="/"
       className="relative z-20 mr-4 flex items-center justify-center space-x-2 px-2 pb-1 text-sm font-normal"
     >
@@ -30,7 +30,7 @@ const CustomNavbarLogo = () => {
         className="object-contain border-white"
         priority
       />
-    </a>
+    </Link>
   );
 };
 
