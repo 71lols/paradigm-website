@@ -52,7 +52,7 @@ export default function CTASection() {
                   App is currently unsigned. After downloading, you may need to:
                 </p>
                 <ol className="text-[#888888] text-xs space-y-1 ml-3">
-                  <li>1. Right-click the app → "Open"</li>
+                  <li>1. Right-click the app → &ldquo;Open&rdquo;</li>
                   <li>2. Or run: <code className="bg-[#1A1A1A] px-1 rounded text-[#B9FFC3]">sudo xattr -d com.apple.quarantine /path/to/Paradigm.app</code></li>
                 </ol>
               </div>
