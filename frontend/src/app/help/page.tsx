@@ -1,5 +1,4 @@
 'use client';
-import GradientContainer from "@/components/UI/gradientContainer";
 import CustomNavbar from "@/components/navbar";
 
 export default function HelpPage() {
