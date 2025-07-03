@@ -51,7 +51,7 @@ export default function CustomNavbar() {
     },
     {
       name: "Help",
-      link: "/#help",
+      link: "/help",
     }
   ];
 
