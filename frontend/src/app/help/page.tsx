@@ -1,4 +1,5 @@
 'use client';
+import GradientContainer from "@/components/UI/gradientContainer";
 import CustomNavbar from "@/components/navbar";
 
 export default function HelpPage() {
@@ -43,6 +44,9 @@ export default function HelpPage() {
                 </a>
                 <a href="#troubleshooting" className="block text-[#888888] hover:text-[#B9FFC3] text-sm transition-colors">
                   Troubleshooting
+                </a>
+                <a href="#support" className="block text-[#888888] hover:text-[#B9FFC3] text-sm transition-colors">
+                  Support
                 </a>
               </nav>
             </div>
@@ -345,6 +349,41 @@ export default function HelpPage() {
                 </ul>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Support */}
+        <section id="support" className="bg-[#1D1D1D] rounded-lg p-8">
+          <h2 className="text-[#D9D9D9] text-2xl font-semibold mb-6">Still Have Questions?</h2>
+          <p className="text-[#888888] text-sm leading-relaxed mb-6">
+            Can&apos;t find what you&apos;re looking for? We&apos;re here to help! Reach out to our team:
+          </p>
+          
+          <div className="bg-[#242424] rounded-lg p-6 text-center">
+            <div className="text-[#B9FFC3] text-2xl mb-3">📧</div>
+            <h3 className="text-[#D9D9D9] font-medium mb-2">Contact Us</h3>
+            <p className="text-[#888888] text-sm mb-4">For any questions, bugs, feature requests, or feedback</p>
+            <div className="flex flex-col sm:flex-row gap-2 justify-center items-center">
+              <a 
+                href="mailto:chris.pengfei.ma@gmail.com" 
+                className="text-[#B9FFC3] hover:underline text-sm"
+              >
+                chris.pengfei.ma@gmail.com
+              </a>
+              <span className="text-[#888888] text-sm hidden sm:inline">or</span>
+              <a 
+                href="mailto:cadenc.woss@gmail.com" 
+                className="text-[#B9FFC3] hover:underline text-sm"
+              >
+                cadenc.woss@gmail.com
+              </a>
+            </div>
+          </div>
+          
+          <div className="bg-[#2A2A2A] border border-[#3A3A3A] rounded-lg p-4 mt-6">
+            <p className="text-[#888888] text-xs text-center">
+              💡 <strong className="text-[#D9D9D9]">Pro tip:</strong> Include your operating system and Paradigm version when reporting issues for faster support!
+            </p>
           </div>
         </section>
         
