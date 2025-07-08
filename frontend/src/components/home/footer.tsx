@@ -89,15 +89,15 @@ export default function Footer() {
                 Pricing
               </a>
               <a 
-                href="#help" 
-                onClick={(e) => handleNavClick(e, "#help")}
+                href="/help" 
+                onClick={(e) => handleNavClick(e, "/help")}
                 className="block text-[#D9D9D9] text-sm hover:text-white transition-colors"
               >
                 Help
               </a>
               <a 
-                href="#contact" 
-                onClick={(e) => handleNavClick(e, "#contact")}
+                href="/help#support" 
+                onClick={(e) => handleNavClick(e, "/help#support")}
                 className="block text-[#D9D9D9] text-sm hover:text-white transition-colors"
               >
                 Contact Us

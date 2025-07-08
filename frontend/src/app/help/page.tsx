@@ -1,5 +1,4 @@
 'use client';
-import GradientContainer from "@/components/UI/gradientContainer";
 import CustomNavbar from "@/components/navbar";
 
 export default function HelpPage() {
@@ -46,7 +45,7 @@ export default function HelpPage() {
                   Troubleshooting
                 </a>
                 <a href="#support" className="block text-[#888888] hover:text-[#B9FFC3] text-sm transition-colors">
-                  Support
+                  Contact Us
                 </a>
               </nav>
             </div>
