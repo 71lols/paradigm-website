@@ -192,7 +192,7 @@ export default function AIContexts() {
             : c
         ));
         
-        alert(`Context "${updatedContext.title}" has been deactivated.`);
+        alert(`Context "${updatedContext.title}" has been deactivated. \n\nIMPORTANT: Please click REFRESH CONTEXT under the 3 dots in the app. `);
       } else {
         // If context is not active, activate it (existing logic)
         updatedContext = await contextService.useContext(context.id);
@@ -204,7 +204,7 @@ export default function AIContexts() {
             : { ...c, isActive: false }
         ));
         
-        alert(`Context "${updatedContext.title}" is now active!\n\nYou can now start chatting with this AI assistant context.`);
+        alert(`Context "${updatedContext.title}" is now active!\n\nIMPORTANT: Please click REFRESH CONTEXT under the 3 dots in the app. \n\nYou can now start chatting with this AI assistant context.`);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to toggle context');
